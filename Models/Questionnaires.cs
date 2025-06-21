@@ -1,0 +1,15 @@
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
+
+namespace WebApplication_SRPFIQ.Models
+{
+    public class Questionnaires
+    {
+        public int ID { get; set; }
+        [MaxLength(100)]
+        public string Name { get; set; }
+        public bool Active { get; set; } = false;
+        [DisplayName("Date de création")]
+        public DateTime CreatedDate { get; set; } //Date de création système
+    }
+}
