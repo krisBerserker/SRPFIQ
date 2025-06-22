@@ -7,7 +7,11 @@ namespace WebApplication_SRPFIQ.Models
     {
         public int ID { get; set; }
         [MaxLength(100)]
+        [DisplayName("Nom")]
         public string Name { get; set; }
+        [MaxLength(500)]
+        [DisplayName("Description")]
+        public string? Description { get; set; }
         public bool Active { get; set; } = false;
         [DisplayName("Date de création")]
         public DateTime CreatedDate { get; set; } //Date de création système

@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace WebApplication_SRPFIQ.Models
 {
-    public class Resources_ResourceCatégories
+    public class Resources_ResourceCategories
     {
         [Key]
         public int ID { get; set; }

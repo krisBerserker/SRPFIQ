@@ -592,7 +592,7 @@ namespace WebApplication_SRPFIQ.Migrations
                         column: x => x.IdQuestionnaireAnswer,
                         principalTable: "QuestionnaireAnswers",
                         principalColumn: "ID",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_QuestionnaireAnswerResults_QuestionnaireQuestions_IdQuestionnaireQuestion",
                         column: x => x.IdQuestionnaireQuestion,

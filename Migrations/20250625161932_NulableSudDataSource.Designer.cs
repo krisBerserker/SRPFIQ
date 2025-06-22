@@ -12,8 +12,8 @@ using WebApplication_SRPFIQ.Data;
 namespace WebApplication_SRPFIQ.Migrations
 {
     [DbContext(typeof(SRPFIQDbContext))]
-    [Migration("20250622005842_InitialMigration")]
-    partial class InitialMigration
+    [Migration("20250625161932_NulableSudDataSource")]
+    partial class NulableSudDataSource
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -443,7 +443,7 @@ namespace WebApplication_SRPFIQ.Migrations
                     b.Property<int>("IdQuestionnaire")
                         .HasColumnType("int");
 
-                    b.Property<int>("IdSubDataSource")
+                    b.Property<int?>("IdSubDataSource")
                         .HasColumnType("int");
 
                     b.Property<int?>("IdSubDataType")
@@ -949,7 +949,7 @@ namespace WebApplication_SRPFIQ.Migrations
                     b.HasOne("WebApplication_SRPFIQ.Models.QuestionnaireAnswers", "QuestionnaireAnswers")
                         .WithMany("AnswerResults")
                         .HasForeignKey("IdQuestionnaireAnswer")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("WebApplication_SRPFIQ.Models.QuestionnaireQuestions", "QuestionnaireQuestions")

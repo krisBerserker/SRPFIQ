@@ -26,6 +26,6 @@ namespace WebApplication_SRPFIQ.Models
         [ForeignKey(nameof(IdResourceCity))]
         public ResourceCities? ResourceCity { get; set; }
 
-        public ICollection<Resources_ResourceCatégories>? Resources_ResourceCategories { get; set; }
+        public ICollection<Resources_ResourceCategories>? Resources_ResourceCategories { get; set; }
     }
 }

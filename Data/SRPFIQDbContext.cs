@@ -19,7 +19,7 @@ namespace WebApplication_SRPFIQ.Data
         public DbSet<ResourceCities> ResourceCities { get; set; }
         public DbSet<ResourceCategories> ResourceCategories { get; set; }
         public DbSet<ResourceBusinessHours> ResourceBusinessHours { get; set; }
-        public DbSet<Resources_ResourceCatégories> Resources_ResourceCatégories { get; set; }
+        public DbSet<Resources_ResourceCategories> Resources_ResourceCatégories { get; set; }
         public DbSet<Questionnaires> Questionnaires { get; set; }
         public DbSet<QuestionnaireQuestions> QuestionnaireQuestions { get; set; }
         public DbSet<QuestionnaireDataSources> QuestionnaireDataSources { get; set; }
@@ -49,7 +49,7 @@ namespace WebApplication_SRPFIQ.Data
             modelBuilder.Entity<ResourceCities>().ToTable("ResourceCities");
             modelBuilder.Entity<ResourceCategories>().ToTable("ResourceCategories");
             modelBuilder.Entity<ResourceBusinessHours>().ToTable("ResourceBusinessHours");
-            modelBuilder.Entity<Resources_ResourceCatégories>().ToTable("Resources_ResourceCatégories");
+            modelBuilder.Entity<Resources_ResourceCategories>().ToTable("Resources_ResourceCatégories");
 
             modelBuilder.Entity<Questionnaires>().ToTable("Questionnaires");
             modelBuilder.Entity<QuestionnaireQuestions>().ToTable("QuestionnaireQuestions");
@@ -105,11 +105,11 @@ namespace WebApplication_SRPFIQ.Data
                 .WithMany(r => r.MedicalNotes)
                 .HasForeignKey(mn => mn.IdRequest);
 
-            modelBuilder.Entity<Resources_ResourceCatégories>()
+            modelBuilder.Entity<Resources_ResourceCategories>()
                 .HasOne(rc => rc.Resource)
                 .WithMany(r => r.Resources_ResourceCategories)
                 .HasForeignKey(rc => rc.IdResource);
-            modelBuilder.Entity<Resources_ResourceCatégories>()
+            modelBuilder.Entity<Resources_ResourceCategories>()
                 .HasOne(rc => rc.ResourceCategory)
                 .WithMany(r => r.Resources_ResourceCategories)
                 .HasForeignKey(rc => rc.IdResourceCategory);
@@ -129,7 +129,8 @@ namespace WebApplication_SRPFIQ.Data
             modelBuilder.Entity<QuestionnaireAnswerResults>()
                 .HasOne(qr => qr.QuestionnaireAnswers)
                 .WithMany(q => q.AnswerResults)
-                .HasForeignKey(qr => qr.IdQuestionnaireAnswer);
+                .HasForeignKey(qr => qr.IdQuestionnaireAnswer)
+                .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<QuestionnaireAnswers>()
                 .HasOne(q => q.Users)

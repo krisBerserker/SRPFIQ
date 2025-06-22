@@ -15,7 +15,7 @@ namespace WebApplication_SRPFIQ.Models
         [DisplayName("Date de création système de la catégorie")]
         public DateTime CreatedDate { get; set; }
 
-        public ICollection<Resources_ResourceCatégories>? Resources_ResourceCategories { get; set; }
+        public ICollection<Resources_ResourceCategories>? Resources_ResourceCategories { get; set; }
 
     }
 }
