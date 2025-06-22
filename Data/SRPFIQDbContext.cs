@@ -129,7 +129,8 @@ namespace WebApplication_SRPFIQ.Data
             modelBuilder.Entity<QuestionnaireAnswerResults>()
                 .HasOne(qr => qr.QuestionnaireAnswers)
                 .WithMany(q => q.AnswerResults)
-                .HasForeignKey(qr => qr.IdQuestionnaireAnswer);
+                .HasForeignKey(qr => qr.IdQuestionnaireAnswer)
+                .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<QuestionnaireAnswers>()
                 .HasOne(q => q.Users)

@@ -12,7 +12,7 @@ using WebApplication_SRPFIQ.Data;
 namespace WebApplication_SRPFIQ.Migrations
 {
     [DbContext(typeof(SRPFIQDbContext))]
-    [Migration("20250622005842_InitialMigration")]
+    [Migration("20250622012727_InitialMigration")]
     partial class InitialMigration
     {
         /// <inheritdoc />
@@ -949,7 +949,7 @@ namespace WebApplication_SRPFIQ.Migrations
                     b.HasOne("WebApplication_SRPFIQ.Models.QuestionnaireAnswers", "QuestionnaireAnswers")
                         .WithMany("AnswerResults")
                         .HasForeignKey("IdQuestionnaireAnswer")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("WebApplication_SRPFIQ.Models.QuestionnaireQuestions", "QuestionnaireQuestions")

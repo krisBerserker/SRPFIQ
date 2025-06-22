@@ -946,7 +946,7 @@ namespace WebApplication_SRPFIQ.Migrations
                     b.HasOne("WebApplication_SRPFIQ.Models.QuestionnaireAnswers", "QuestionnaireAnswers")
                         .WithMany("AnswerResults")
                         .HasForeignKey("IdQuestionnaireAnswer")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("WebApplication_SRPFIQ.Models.QuestionnaireQuestions", "QuestionnaireQuestions")
