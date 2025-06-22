@@ -145,6 +145,10 @@ namespace WebApplication_SRPFIQ.Data
                 .HasOne(q => q.Questionnaires)
                 .WithMany(qn => qn.Answers)
                 .HasForeignKey(q => q.IdQuestionnaire);
+
+            modelBuilder.Entity<Meetings>()
+                .Property(m => m.MeetingNumber)
+                .ValueGeneratedNever();
         }
     }
 }
