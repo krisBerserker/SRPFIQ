@@ -13,6 +13,6 @@ namespace WebApplication_SRPFIQ.Models
         [ForeignKey(nameof(IdUserRole))]
         public UserRoles? UserRole { get; set; }
         [ForeignKey(nameof(IdUser))]
-        public Users Users { get; set; }
+        public Users? Users { get; set; }
     }
 }

@@ -9,5 +9,7 @@ namespace WebApplication_SRPFIQ.Models
         [MaxLength(200)]
         public string Name { get; set; }
         public bool Active { get; set; }
+        // Navigation vers les rôles via la table d'intersection
+        public ICollection<UserPermissions>? Permissions { get; set; }
     }
 }

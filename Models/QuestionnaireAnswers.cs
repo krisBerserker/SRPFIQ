@@ -23,5 +23,7 @@ namespace WebApplication_SRPFIQ.Models
         public Requests? Requests { get; set; }
         [ForeignKey(nameof(IdUser))]
         public Users? Users { get; set; }
+
+        public ICollection<QuestionnaireAnswerResults>? AnswerResults { get; set; }
     }
 }

@@ -74,5 +74,7 @@ namespace WebApplication_SRPFIQ.Models
 
         [ForeignKey(nameof(IdMedicalTransferReason))]
         public MedicalTransferReason? MedicalTransferReason { get; set; }
+
+        public ICollection<MaternalExperiences_MaternalExperienceThemes>? MaternalExperiences_MaternalExperiencesThemes { get; set; }
     }
 }

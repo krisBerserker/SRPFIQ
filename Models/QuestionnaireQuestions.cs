@@ -34,9 +34,11 @@ namespace WebApplication_SRPFIQ.Models
 
 
         [ForeignKey(nameof(IdQuestionnaire))]
-        public Questionnaires? Questionnaire { get; set; }
+        public Questionnaires Questionnaire { get; set; }
         [ForeignKey(nameof(IdMainDataSource))]
         
         public QuestionnaireDataSources? QuestionnaireDataSources { get; set; }
+
+        public ICollection<QuestionnaireAnswerResults>? AnswerResults { get; set; }
     }
 }

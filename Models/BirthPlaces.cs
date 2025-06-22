@@ -12,5 +12,7 @@ namespace WebApplication_SRPFIQ.Models
         [DisplayName("Nom")]
         public string Name { get; set; }
         public bool Active { get; set; }//Si est disponible pour sélection
+
+        public ICollection<MaternalExperiences> MaternalExperiences { get; set; }
     }
 }

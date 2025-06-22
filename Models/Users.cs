@@ -27,5 +27,15 @@ namespace WebApplication_SRPFIQ.Models
         public DateTime LastLoginDate { get; set; }
         public bool MustChangePassword { get; set; } = true; //Détermine si le mot de passe doit être changé à la prochaine connexion
         public bool Active { get; set; } = true; //Détermine si l'utilisateur est actif ou non
+
+        // Navigation vers les rôles via la table d'intersection
+        public ICollection<UserPermissions>? Permissions { get; set; }
+        // Navigation vers les demandes via la table d'intersection
+        public ICollection<UserAssignedRequests>? AssignedRequests { get; set; }
+        // Navigation vers les notes via la table d'intersection
+        public ICollection<RequestNotes>? RequestNotes { get; set; }
+        public ICollection<MedicalNotes>? MedicalNotes { get; set; }
+        public ICollection<Meetings>? Meetings { get; set; }
+        public ICollection<QuestionnaireAnswers>? QuestionnaireAnswers { get; set; }
     }
 }

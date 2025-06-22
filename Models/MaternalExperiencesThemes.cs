@@ -16,5 +16,7 @@ namespace WebApplication_SRPFIQ.Models
         public string Name { get; set; }
         [DisplayName("Abordé en prénatal")]
         public bool IsPrenatal { get; set; }
+
+        public ICollection<MaternalExperiences_MaternalExperienceThemes>? MaternalExperiences_MaternalExperiencesThemes { get; set; }
     }
 }

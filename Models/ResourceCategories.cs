@@ -13,7 +13,9 @@ namespace WebApplication_SRPFIQ.Models
         public string Name { get; set; }
         public bool Active { get; set; } = true; //Détermine si la catégorie est disponible pour sélection
         [DisplayName("Date de création système de la catégorie")]
-        public DateTime CreatedDate { get; set; } 
+        public DateTime CreatedDate { get; set; }
+
+        public ICollection<Resources_ResourceCatégories>? Resources_ResourceCategories { get; set; }
 
     }
 }

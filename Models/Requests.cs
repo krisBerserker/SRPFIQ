@@ -63,5 +63,11 @@ namespace WebApplication_SRPFIQ.Models
 
         [ForeignKey(nameof(IdUserClosedBy))]
         public Users? UserClosedBy { get; set; }
+
+        public ICollection<UserAssignedRequests>? AssignedUsers { get; set; }
+        public ICollection<RequestNotes>? Notes { get; set; }
+        public ICollection<MedicalNotes>? MedicalNotes { get; set; }
+        public ICollection<Meetings>? Meetings { get; set; }
+        public ICollection<QuestionnaireAnswers>? QuestionnaireAnswers { get; set; }
     }
 }
