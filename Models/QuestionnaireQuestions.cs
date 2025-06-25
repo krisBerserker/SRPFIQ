@@ -29,7 +29,7 @@ namespace WebApplication_SRPFIQ.Models
         public int IdMainDataType { get; set; }
         public int? IdMainDataSource { get; set; }
         public int? IdSubDataType { get; set; }
-        public int IdSubDataSource { get; set; }
+        public int? IdSubDataSource { get; set; }
 
 
 
