@@ -1,0 +1,197 @@
+﻿@model IEnumerable<WebApplication_SRPFIQ.Models.MaternalExperiences>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>MaternalExperiences</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.ID)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.BirthDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.SizeAtBirthDays)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.SizeAtBithWeeks)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.BabyName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.BabyGender)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.BirthPlaceOther)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IsNaturalDelivery)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.HadInductionLabor)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.HadNaturalReliefs)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.HadPsychologicalSupport)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.HadMembranesRupture)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.HadEpidural)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.HadOtherAnesthetic)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.HadEpisiotomy)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.HadSuctionCupsForceps)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.HadPlannedCesarean)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.HadUnPlannedCesarean)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.HadDeceased)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.HasBeenTranfered)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IsBreastFeedingAtBirth)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IsBreastFeedingSixWeeks)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.BreastFeedingNotes)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CreatedDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.LastModifiedDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Requests)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.BirthPlaces)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.MedicalTransferReason)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ID)
+                </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.BirthDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.SizeAtBirthDays)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.SizeAtBithWeeks)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.BabyName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.BabyGender)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.BirthPlaceOther)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IsNaturalDelivery)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.HadInductionLabor)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.HadNaturalReliefs)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.HadPsychologicalSupport)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.HadMembranesRupture)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.HadEpidural)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.HadOtherAnesthetic)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.HadEpisiotomy)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.HadSuctionCupsForceps)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.HadPlannedCesarean)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.HadUnPlannedCesarean)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.HadDeceased)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.HasBeenTranfered)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IsBreastFeedingAtBirth)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IsBreastFeedingSixWeeks)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.BreastFeedingNotes)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CreatedDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.LastModifiedDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Requests.FolioNumber)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.BirthPlaces.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.MedicalTransferReason.Name)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.ID">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

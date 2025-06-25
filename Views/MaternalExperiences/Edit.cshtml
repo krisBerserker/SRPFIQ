@@ -1,0 +1,164 @@
+﻿@model WebApplication_SRPFIQ.Models.MaternalExperiences
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Edit</h1>
+
+<h4>MaternalExperiences</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="ID" />
+            <div class="form-group">
+                <label asp-for="IdRequest" class="control-label"></label>
+                <select asp-for="IdRequest" class="form-control" asp-items="ViewBag.IdRequest"></select>
+                <span asp-validation-for="IdRequest" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="BirthDate" class="control-label"></label>
+                <input asp-for="BirthDate" class="form-control" />
+                <span asp-validation-for="BirthDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="SizeAtBirthDays" class="control-label"></label>
+                <input asp-for="SizeAtBirthDays" class="form-control" />
+                <span asp-validation-for="SizeAtBirthDays" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="SizeAtBithWeeks" class="control-label"></label>
+                <input asp-for="SizeAtBithWeeks" class="form-control" />
+                <span asp-validation-for="SizeAtBithWeeks" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="BabyName" class="control-label"></label>
+                <input asp-for="BabyName" class="form-control" />
+                <span asp-validation-for="BabyName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="BabyGender" class="control-label"></label>
+                <input asp-for="BabyGender" class="form-control" />
+                <span asp-validation-for="BabyGender" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="IdBirthPlace" class="control-label"></label>
+                <select asp-for="IdBirthPlace" class="form-control" asp-items="ViewBag.IdBirthPlace"></select>
+                <span asp-validation-for="IdBirthPlace" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="BirthPlaceOther" class="control-label"></label>
+                <input asp-for="BirthPlaceOther" class="form-control" />
+                <span asp-validation-for="BirthPlaceOther" class="text-danger"></span>
+            </div>
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="IsNaturalDelivery" /> @Html.DisplayNameFor(model => model.IsNaturalDelivery)
+                </label>
+            </div>
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="HadInductionLabor" /> @Html.DisplayNameFor(model => model.HadInductionLabor)
+                </label>
+            </div>
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="HadNaturalReliefs" /> @Html.DisplayNameFor(model => model.HadNaturalReliefs)
+                </label>
+            </div>
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="HadPsychologicalSupport" /> @Html.DisplayNameFor(model => model.HadPsychologicalSupport)
+                </label>
+            </div>
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="HadMembranesRupture" /> @Html.DisplayNameFor(model => model.HadMembranesRupture)
+                </label>
+            </div>
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="HadEpidural" /> @Html.DisplayNameFor(model => model.HadEpidural)
+                </label>
+            </div>
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="HadOtherAnesthetic" /> @Html.DisplayNameFor(model => model.HadOtherAnesthetic)
+                </label>
+            </div>
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="HadEpisiotomy" /> @Html.DisplayNameFor(model => model.HadEpisiotomy)
+                </label>
+            </div>
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="HadSuctionCupsForceps" /> @Html.DisplayNameFor(model => model.HadSuctionCupsForceps)
+                </label>
+            </div>
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="HadPlannedCesarean" /> @Html.DisplayNameFor(model => model.HadPlannedCesarean)
+                </label>
+            </div>
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="HadUnPlannedCesarean" /> @Html.DisplayNameFor(model => model.HadUnPlannedCesarean)
+                </label>
+            </div>
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="HadDeceased" /> @Html.DisplayNameFor(model => model.HadDeceased)
+                </label>
+            </div>
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="HasBeenTranfered" /> @Html.DisplayNameFor(model => model.HasBeenTranfered)
+                </label>
+            </div>
+            <div class="form-group">
+                <label asp-for="IdMedicalTransferReason" class="control-label"></label>
+                <select asp-for="IdMedicalTransferReason" class="form-control" asp-items="ViewBag.IdMedicalTransferReason"></select>
+                <span asp-validation-for="IdMedicalTransferReason" class="text-danger"></span>
+            </div>
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="IsBreastFeedingAtBirth" /> @Html.DisplayNameFor(model => model.IsBreastFeedingAtBirth)
+                </label>
+            </div>
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="IsBreastFeedingSixWeeks" /> @Html.DisplayNameFor(model => model.IsBreastFeedingSixWeeks)
+                </label>
+            </div>
+            <div class="form-group">
+                <label asp-for="BreastFeedingNotes" class="control-label"></label>
+                <input asp-for="BreastFeedingNotes" class="form-control" />
+                <span asp-validation-for="BreastFeedingNotes" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="CreatedDate" class="control-label"></label>
+                <input asp-for="CreatedDate" class="form-control" />
+                <span asp-validation-for="CreatedDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="LastModifiedDate" class="control-label"></label>
+                <input asp-for="LastModifiedDate" class="form-control" />
+                <span asp-validation-for="LastModifiedDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
