@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WebApplication_SRPFIQ.Data;
 
@@ -11,9 +12,11 @@ using WebApplication_SRPFIQ.Data;
 namespace WebApplication_SRPFIQ.Migrations
 {
     [DbContext(typeof(SRPFIQDbContext))]
-    partial class SRPFIQDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250625163007_modifyquestionnaire")]
+    partial class modifyquestionnaire
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
