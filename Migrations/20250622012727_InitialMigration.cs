@@ -310,7 +310,7 @@ namespace WebApplication_SRPFIQ.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Resources_ResourceCatégories",
+                name: "Resources_ResourceCategories",
                 columns: table => new
                 {
                     ID = table.Column<int>(type: "int", nullable: false)
@@ -320,15 +320,15 @@ namespace WebApplication_SRPFIQ.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Resources_ResourceCatégories", x => x.ID);
+                    table.PrimaryKey("PK_Resources_ResourceCategories", x => x.ID);
                     table.ForeignKey(
-                        name: "FK_Resources_ResourceCatégories_ResourceCategories_IdResourceCategory",
+                        name: "FK_Resources_ResourceCategories_ResourceCategories_IdResourceCategory",
                         column: x => x.IdResourceCategory,
                         principalTable: "ResourceCategories",
                         principalColumn: "ID",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Resources_ResourceCatégories_Resources_IdResource",
+                        name: "FK_Resources_ResourceCategories_Resources_IdResource",
                         column: x => x.IdResource,
                         principalTable: "Resources",
                         principalColumn: "ID",
@@ -712,13 +712,13 @@ namespace WebApplication_SRPFIQ.Migrations
                 column: "IdResourceCity");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Resources_ResourceCatégories_IdResource",
-                table: "Resources_ResourceCatégories",
+                name: "IX_Resources_ResourceCategories_IdResource",
+                table: "Resources_ResourceCategories",
                 column: "IdResource");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Resources_ResourceCatégories_IdResourceCategory",
-                table: "Resources_ResourceCatégories",
+                name: "IX_Resources_ResourceCategories_IdResourceCategory",
+                table: "Resources_ResourceCategories",
                 column: "IdResourceCategory");
 
             migrationBuilder.CreateIndex(
@@ -767,7 +767,7 @@ namespace WebApplication_SRPFIQ.Migrations
                 name: "ResourceBusinessHours");
 
             migrationBuilder.DropTable(
-                name: "Resources_ResourceCatégories");
+                name: "Resources_ResourceCategories");
 
             migrationBuilder.DropTable(
                 name: "UserAssignedRequests");

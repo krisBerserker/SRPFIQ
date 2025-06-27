@@ -10,23 +10,23 @@ using WebApplication_SRPFIQ.Models;
 
 namespace WebApplication_SRPFIQ.Controllers
 {
-    public class Resources_ResourceCatégoriesController : Controller
+    public class Resources_ResourceCategoriesController : Controller
     {
         private readonly SRPFIQDbContext _context;
 
-        public Resources_ResourceCatégoriesController(SRPFIQDbContext context)
+        public Resources_ResourceCategoriesController(SRPFIQDbContext context)
         {
             _context = context;
         }
 
-        // GET: Resources_ResourceCatégories
+        // GET: Resources_ResourceCategories
         public async Task<IActionResult> Index()
         {
-            var sRPFIQDbContext = _context.Resources_ResourceCatégories.Include(r => r.Resource).Include(r => r.ResourceCategory);
+            var sRPFIQDbContext = _context.Resources_ResourceCategories.Include(r => r.Resource).Include(r => r.ResourceCategory);
             return View(await sRPFIQDbContext.ToListAsync());
         }
 
-        // GET: Resources_ResourceCatégories/Details/5
+        // GET: Resources_ResourceCategories/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -34,7 +34,7 @@ namespace WebApplication_SRPFIQ.Controllers
                 return NotFound();
             }
 
-            var resources_ResourceCatégories = await _context.Resources_ResourceCatégories
+            var resources_ResourceCatégories = await _context.Resources_ResourceCategories
                 .Include(r => r.Resource)
                 .Include(r => r.ResourceCategory)
                 .FirstOrDefaultAsync(m => m.ID == id);
@@ -46,7 +46,7 @@ namespace WebApplication_SRPFIQ.Controllers
             return View(resources_ResourceCatégories);
         }
 
-        // GET: Resources_ResourceCatégories/Create
+        // GET: Resources_ResourceCategories/Create
         public IActionResult Create()
         {
             ViewData["IdResource"] = new SelectList(_context.Resources, "ID", "Name");
@@ -54,12 +54,12 @@ namespace WebApplication_SRPFIQ.Controllers
             return View();
         }
 
-        // POST: Resources_ResourceCatégories/Create
+        // POST: Resources_ResourceCategories/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,IdResourceCategory,IdResource")] Resources_ResourceCatégories resources_ResourceCatégories)
+        public async Task<IActionResult> Create([Bind("ID,IdResourceCategory,IdResource")] Resources_ResourceCategories resources_ResourceCatégories)
         {
             if (ModelState.IsValid)
             {
@@ -72,7 +72,7 @@ namespace WebApplication_SRPFIQ.Controllers
             return View(resources_ResourceCatégories);
         }
 
-        // GET: Resources_ResourceCatégories/Edit/5
+        // GET: Resources_ResourceCategories/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -80,22 +80,22 @@ namespace WebApplication_SRPFIQ.Controllers
                 return NotFound();
             }
 
-            var resources_ResourceCatégories = await _context.Resources_ResourceCatégories.FindAsync(id);
-            if (resources_ResourceCatégories == null)
+            var resources_ResourceCategories = await _context.Resources_ResourceCategories.FindAsync(id);
+            if (resources_ResourceCategories == null)
             {
                 return NotFound();
             }
-            ViewData["IdResource"] = new SelectList(_context.Resources, "ID", "Name", resources_ResourceCatégories.IdResource);
-            ViewData["IdResourceCategory"] = new SelectList(_context.ResourceCategories, "ID", "Name", resources_ResourceCatégories.IdResourceCategory);
-            return View(resources_ResourceCatégories);
+            ViewData["IdResource"] = new SelectList(_context.Resources, "ID", "Name", resources_ResourceCategories.IdResource);
+            ViewData["IdResourceCategory"] = new SelectList(_context.ResourceCategories, "ID", "Name", resources_ResourceCategories.IdResourceCategory);
+            return View(resources_ResourceCategories);
         }
 
-        // POST: Resources_ResourceCatégories/Edit/5
+        // POST: Resources_ResourceCategories/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,IdResourceCategory,IdResource")] Resources_ResourceCatégories resources_ResourceCatégories)
+        public async Task<IActionResult> Edit(int id, [Bind("ID,IdResourceCategory,IdResource")] Resources_ResourceCategories resources_ResourceCatégories)
         {
             if (id != resources_ResourceCatégories.ID)
             {
@@ -111,7 +111,7 @@ namespace WebApplication_SRPFIQ.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!Resources_ResourceCatégoriesExists(resources_ResourceCatégories.ID))
+                    if (!Resources_ResourceCategoriesExists(resources_ResourceCatégories.ID))
                     {
                         return NotFound();
                     }
@@ -127,7 +127,7 @@ namespace WebApplication_SRPFIQ.Controllers
             return View(resources_ResourceCatégories);
         }
 
-        // GET: Resources_ResourceCatégories/Delete/5
+        // GET: Resources_ResourceCategories/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -135,7 +135,7 @@ namespace WebApplication_SRPFIQ.Controllers
                 return NotFound();
             }
 
-            var resources_ResourceCatégories = await _context.Resources_ResourceCatégories
+            var resources_ResourceCatégories = await _context.Resources_ResourceCategories
                 .Include(r => r.Resource)
                 .Include(r => r.ResourceCategory)
                 .FirstOrDefaultAsync(m => m.ID == id);
@@ -147,24 +147,24 @@ namespace WebApplication_SRPFIQ.Controllers
             return View(resources_ResourceCatégories);
         }
 
-        // POST: Resources_ResourceCatégories/Delete/5
+        // POST: Resources_ResourceCategories/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var resources_ResourceCatégories = await _context.Resources_ResourceCatégories.FindAsync(id);
+            var resources_ResourceCatégories = await _context.Resources_ResourceCategories.FindAsync(id);
             if (resources_ResourceCatégories != null)
             {
-                _context.Resources_ResourceCatégories.Remove(resources_ResourceCatégories);
+                _context.Resources_ResourceCategories.Remove(resources_ResourceCatégories);
             }
 
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool Resources_ResourceCatégoriesExists(int id)
+        private bool Resources_ResourceCategoriesExists(int id)
         {
-            return _context.Resources_ResourceCatégories.Any(e => e.ID == id);
+            return _context.Resources_ResourceCategories.Any(e => e.ID == id);
         }
     }
 }

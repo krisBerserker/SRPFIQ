@@ -11,6 +11,7 @@ namespace WebApplication_SRPFIQ.Models
         public string Name { get; set; }
 
         [MaxLength(500)]
+        [DisplayName("Description")]
         public string? Description { get; set; }
 
         public bool Active { get; set; } = false;

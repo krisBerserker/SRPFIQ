@@ -19,7 +19,7 @@ namespace WebApplication_SRPFIQ.Data
         public DbSet<ResourceCities> ResourceCities { get; set; }
         public DbSet<ResourceCategories> ResourceCategories { get; set; }
         public DbSet<ResourceBusinessHours> ResourceBusinessHours { get; set; }
-        public DbSet<Resources_ResourceCategories> Resources_ResourceCatégories { get; set; }
+        public DbSet<Resources_ResourceCategories> Resources_ResourceCategories { get; set; }
         public DbSet<Questionnaires> Questionnaires { get; set; }
         public DbSet<QuestionnaireQuestions> QuestionnaireQuestions { get; set; }
         public DbSet<QuestionnaireDataSources> QuestionnaireDataSources { get; set; }
@@ -49,7 +49,7 @@ namespace WebApplication_SRPFIQ.Data
             modelBuilder.Entity<ResourceCities>().ToTable("ResourceCities");
             modelBuilder.Entity<ResourceCategories>().ToTable("ResourceCategories");
             modelBuilder.Entity<ResourceBusinessHours>().ToTable("ResourceBusinessHours");
-            modelBuilder.Entity<Resources_ResourceCategories>().ToTable("Resources_ResourceCatégories");
+            modelBuilder.Entity<Resources_ResourceCategories>().ToTable("Resources_ResourceCategories");
 
             modelBuilder.Entity<Questionnaires>().ToTable("Questionnaires");
             modelBuilder.Entity<QuestionnaireQuestions>().ToTable("QuestionnaireQuestions");

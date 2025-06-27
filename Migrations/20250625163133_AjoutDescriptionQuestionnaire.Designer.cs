@@ -735,7 +735,7 @@ namespace WebApplication_SRPFIQ.Migrations
                     b.ToTable("Resources", (string)null);
                 });
 
-            modelBuilder.Entity("WebApplication_SRPFIQ.Models.Resources_ResourceCatégories", b =>
+            modelBuilder.Entity("WebApplication_SRPFIQ.Models.Resources_ResourceCategories", b =>
                 {
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
@@ -755,7 +755,7 @@ namespace WebApplication_SRPFIQ.Migrations
 
                     b.HasIndex("IdResourceCategory");
 
-                    b.ToTable("Resources_ResourceCatégories", (string)null);
+                    b.ToTable("Resources_ResourceCategories", (string)null);
                 });
 
             modelBuilder.Entity("WebApplication_SRPFIQ.Models.UserAssignedRequests", b =>
@@ -1072,7 +1072,7 @@ namespace WebApplication_SRPFIQ.Migrations
                     b.Navigation("ResourceCity");
                 });
 
-            modelBuilder.Entity("WebApplication_SRPFIQ.Models.Resources_ResourceCatégories", b =>
+            modelBuilder.Entity("WebApplication_SRPFIQ.Models.Resources_ResourceCategories", b =>
                 {
                     b.HasOne("WebApplication_SRPFIQ.Models.Resources", "Resource")
                         .WithMany("Resources_ResourceCategories")
