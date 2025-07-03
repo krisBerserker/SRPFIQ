@@ -38,6 +38,7 @@
     position: relative;
     z-index: 1;
     color: #000; /* forcer le texte à noir */
+	padding-top: 2.5rem;
 }
 /* --- Tableaux --- */
 table.table {
@@ -81,7 +82,7 @@ table.table tbody tr td:last-child a:hover {
 }
 
 /* --- Formulaires --- */
-form {
+form:not(.navbar-search):not(.no-style) {
     background-color: #fff;
     padding: 1rem 1.5rem;
     border-radius: 6px;
@@ -99,11 +100,11 @@ form label {
     color: #167705; /* couleur secondaire */
 }
 
-form input[type="text"],
-form input[type="password"],
-form input[type="email"],
-form select,
-form textarea {
+form:not(.navbar-search):not(.no-style) input[type="text"],
+form:not(.navbar-search):not(.no-style) input[type="password"],
+form:not(.navbar-search):not(.no-style) input[type="email"],
+form:not(.navbar-search):not(.no-style) select,
+form:not(.navbar-search):not(.no-style) textarea {
     width: 100%;
     padding: 0.4rem 0.6rem;
     font-size: 0.9rem;
@@ -114,11 +115,11 @@ form textarea {
     transition: border-color 0.2s ease-in-out;
 }
 
-form input[type="text"]:focus,
-form input[type="password"]:focus,
-form input[type="email"]:focus,
-form select:focus,
-form textarea:focus {
+form:not(.navbar-search):not(.no-style) input[type="text"]:focus,
+form:not(.navbar-search):not(.no-style) input[type="password"]:focus,
+form:not(.navbar-search):not(.no-style) input[type="email"]:focus,
+form:not(.navbar-search):not(.no-style) select:focus,
+form:not(.navbar-search):not(.no-style) textarea:focus {
     border-color: #D84B1A;
     outline: none;
 }
