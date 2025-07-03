@@ -2,15 +2,16 @@
 
 @{
     ViewData["Title"] = "Edit";
+    ViewBag.ModalModel = Model;
 }
 
 <h1>Edit</h1>
 
 <h4>Questionnaires</h4>
 <hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
+<div class="">
+    <div class="">
+        <form asp-action="Edit" class="styled-form">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="ID" />
             <div class="form-group">
@@ -32,13 +33,64 @@
                 <input type="submit" value="Save" class="btn btn-primary" />
             </div>
         </form>
+
+        @* liste des questions *@
+        <h4>Questions associées</h4>
+        <button type="button" class="btn btn-outline-primary btn-sm" data-toggle="modal" data-target="#addQuestionModal" data-questionnaire-id="@Model.ID">
+            <i class="fas fa-plus-circle"></i> Ajouter une question
+        </button>
+
+        @if (Model.Questions != null && Model.Questions.Any())
+        {
+            <div class="table-responsive">
+                <table class="table table-bordered table-striped table-sm">
+                    <thead>
+                        <tr>
+                            <th>Nom</th>
+                            <th>Titre</th>
+                            <th>Actif</th>
+                            <th>Ordre</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var q in Model.Questions)
+                        {
+                            <tr>
+                                <td>@q.Name</td>
+                                <td>@q.Title</td>
+                                <td>@q.Active</td>
+                                <td>@q.Order</td>
+                                <td>
+                                    <a asp-controller="QuestionnaireQuestions" asp-action="Edit" asp-route-id="@q.ID" title="Modifier">
+                                        <i class="fas fa-edit text-warning"></i>
+                                    </a>
+                                    <a asp-controller="QuestionnaireQuestions" asp-action="Details" asp-route-id="@q.ID" title="Détails" class="ml-2">
+                                        <i class="fas fa-info-circle text-success"></i>
+                                    </a>
+                                    <a asp-controller="QuestionnaireQuestions" asp-action="Delete" asp-route-id="@q.ID" title="Supprimer" class="ml-2">
+                                        <i class="fas fa-trash-alt text-danger"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
+        {
+            <p class="text-muted">Aucune question associée pour l’instant.</p>
+        }
     </div>
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index" class="btn-link">Back to List</a>
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

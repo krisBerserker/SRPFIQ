@@ -7,7 +7,7 @@
 <h1>Questionnaires</h1>
 
 <p>
-    <a asp-action="Create" class="btn-link">Create New</a>
+    <a asp-action="Create" class="btn-link">Ajouter un Questionnaire</a>
 </p>
 <table class="table">
     <thead>
@@ -24,7 +24,9 @@
             <th>
                 @Html.DisplayNameFor(model => model.CreatedDate)
             </th>
-            <th></th>
+            <th>
+                Actions
+            </th>
         </tr>
     </thead>
     <tbody>
@@ -42,11 +44,20 @@
             <td>
                 @Html.DisplayFor(modelItem => item.CreatedDate)
             </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.ID">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
-            </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.ID" title="Modifier">
+                        <i class="fas fa-edit text-primary"></i>
+                    </a>
+                    <form asp-action="ToggleActive" asp-route-id="@item.ID" method="post" class="d-inline ">
+                        <button type="submit" title="@(item.Active ? "Désactiver" : "Activer")" class="btn btn-link p-0 m-0 align-baseline">
+                            <i class="fas @(item.Active ? "fa-toggle-on text-success" : "fa-toggle-off text-danger")"></i>
+                        </button>
+                    </form>
+
+                    <a asp-action="Delete" asp-route-id="@item.ID" title="Supprimer" class="ml-2">
+                        <i class="fas fa-trash-alt text-danger"></i>
+                    </a>
+                </td>
         </tr>
 }
     </tbody>

@@ -21,19 +21,30 @@
     <div id="wrapper">
 
         <!-- Sidebar -->
-        @Html.Partial("_Sidebar") <!-- tu peux créer un fichier _Sidebar.cshtml avec le code du menu -->
+        @Html.Partial("_Sidebar")
         <!-- End of Sidebar -->
         <!-- Content Wrapper -->
         <div id="content-wrapper" class="d-flex flex-column">
             <div id="content">
+
                 <!-- Topbar -->
-                @Html.Partial("_Topbar") <!-- idem, tu peux extraire la barre du haut -->
+                @Html.Partial("_Topbar")
                 <!-- End of Topbar -->
                 <!-- Main Content -->
                 <div class="container-fluid">
                     @RenderBody()
                 </div>
+
             </div>
+
+            <!-- 🔻 Modal (hors container-fluid) -->
+            @{
+                var modalModel = ViewBag.ModalModel as WebApplication_SRPFIQ.Models.Questionnaires;
+            }
+            @if (modalModel != null)
+            {
+                @Html.Partial("~/Views/QuestionnaireQuestions/ModalQuestions.cshtml", modalModel)
+            }
 
             <!-- Footer -->
             <footer class="sticky-footer bg-white">

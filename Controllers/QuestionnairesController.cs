@@ -47,6 +47,7 @@ namespace WebApplication_SRPFIQ.Controllers
         public IActionResult Create()
         {
             return View();
+
         }
 
         // POST: Questionnaires/Create
@@ -73,13 +74,20 @@ namespace WebApplication_SRPFIQ.Controllers
                 return NotFound();
             }
 
-            var questionnaires = await _context.Questionnaires.FindAsync(id);
+            var questionnaires = await _context.Questionnaires
+             .Include(q => q.Questions)
+             .FirstOrDefaultAsync(q => q.ID == id);
+
+
             if (questionnaires == null)
             {
                 return NotFound();
             }
             return View(questionnaires);
         }
+
+
+       
 
         // POST: Questionnaires/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
@@ -115,6 +123,26 @@ namespace WebApplication_SRPFIQ.Controllers
             }
             return View(questionnaires);
         }
+
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ToggleActive(int id)
+        {
+            var questionnaire = await _context.Questionnaires.FindAsync(id);
+            if (questionnaire == null)
+            {
+                return NotFound();
+            }
+
+            questionnaire.Active = !questionnaire.Active;
+            _context.Update(questionnaire);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(Index));
+        }
+
+
 
         // GET: Questionnaires/Delete/5
         public async Task<IActionResult> Delete(int? id)
