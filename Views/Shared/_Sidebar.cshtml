@@ -1,0 +1,114 @@
+﻿<ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+
+    <!-- Sidebar - Brand -->
+    <a class="sidebar-brand d-flex align-items-center justify-content-center" asp-controller="Home" asp-action="Index">
+        <div class="sidebar-brand-icon logo-container">
+            <img src="~/img/logoSRPFIQ.png" alt="SRPFIQ Logo" class="logo-img" />
+        </div>
+        <div class="sidebar-brand-text mx-3">SRPFIQ</div>
+    </a>
+
+
+    <hr class="sidebar-divider my-0" />
+
+    <!-- Dashboard -->
+    <li class="nav-item active">
+        <a class="nav-link" asp-controller="Home" asp-action="Index">
+            <i class="fas fa-fw fa-tachometer-alt"></i>
+            <span>Dashboard</span>
+        </a>
+    </li>
+
+    <hr class="sidebar-divider" />
+
+    <!-- Gérer les demandes -->
+    <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseDemandes"
+           aria-expanded="true" aria-controls="collapseDemandes">
+            <i class="fas fa-fw fa-folder"></i>
+            <span>Gérer les demandes</span>
+        </a>
+        <div id="collapseDemandes" class="collapse" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <a class="collapse-item" asp-controller="Requests" asp-action="Index">Liste Des Demandes</a>
+                <a class="collapse-item" asp-controller="RequestNotes" asp-action="Index">Request Notes</a>
+                <a class="collapse-item" asp-controller="UserAssignedRequests" asp-action="Index">Assigner les demandes</a>
+                <a class="collapse-item" asp-controller="MedicalNotes" asp-action="Index">Medical Notes</a>
+                <a class="collapse-item" asp-controller="Meetings" asp-action="Index">Reunion</a>
+                <a class="collapse-item" asp-controller="MedicalTransferReasons" asp-action="Index">Medical Transfer Reasons</a>
+            </div>
+        </div>
+    </li>
+
+    <!-- Gérer les ressources -->
+    <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseRessources"
+           aria-expanded="true" aria-controls="collapseRessources">
+            <i class="fas fa-fw fa-cogs"></i>
+            <span>Gérer les ressources</span>
+        </a>
+        <div id="collapseRessources" class="collapse" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <a class="collapse-item" asp-controller="Resources" asp-action="Index">Ressources</a>
+                <a class="collapse-item" asp-controller="ResourceCategories" asp-action="Index">Categories de Ressources</a>
+                <a class="collapse-item" asp-controller="ResourceCities" asp-action="Index">Villes de Ressources</a>
+                <a class="collapse-item" asp-controller="ResourceBusinessHours" asp-action="Index">Business Hours</a>
+                <a class="collapse-item" asp-controller="Resources_ResourceCatégories" asp-action="Index">Resources - Resource Catégories</a>
+                <a class="collapse-item" asp-controller="BirthPlaces" asp-action="Index">Birth Places</a>
+            </div>
+        </div>
+    </li>
+
+    <!-- Gérer les utilisateurs -->
+    <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUtilisateurs"
+           aria-expanded="true" aria-controls="collapseUtilisateurs">
+            <i class="fas fa-fw fa-users"></i>
+            <span>Gérer les utilisateurs</span>
+        </a>
+        <div id="collapseUtilisateurs" class="collapse" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <a class="collapse-item" asp-controller="Users" asp-action="Index">Utilisateurs</a>
+                <a class="collapse-item" asp-controller="UserRoles" asp-action="Index">Roles D'Utilisateurs</a>
+                <a class="collapse-item" asp-controller="UserPermissions" asp-action="Index">les Permissions</a>
+            </div>
+        </div>
+    </li>
+
+    <!-- Gérer les questionnaires -->
+    <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseQuestionnaires"
+           aria-expanded="true" aria-controls="collapseQuestionnaires">
+            <i class="fas fa-fw fa-question-circle"></i>
+            <span>Gérer les questionnaires</span>
+        </a>
+        <div id="collapseQuestionnaires" class="collapse" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <a class="collapse-item" asp-controller="Questionnaires" asp-action="Index">Questionnaires</a>
+                <a class="collapse-item" asp-controller="QuestionnaireQuestions" asp-action="Index">Questionnaire Questions</a>
+                <a class="collapse-item" asp-controller="QuestionnaireAnswers" asp-action="Index">Questionnaire Answers</a>
+                <a class="collapse-item" asp-controller="QuestionnaireAnswerResults" asp-action="Index">Questionnaire Answer Results</a>
+                <a class="collapse-item" asp-controller="QuestionnaireDataSourceOptions" asp-action="Index">DataSource Options</a>
+                <a class="collapse-item" asp-controller="QuestionnaireDataSources" asp-action="Index">Data Sources</a>
+            </div>
+        </div>
+    </li>
+
+    <!-- Autres -->
+    <hr class="sidebar-divider" />
+    <li class="nav-item">
+        <a class="nav-link collapsed" href="#">
+            <i class="fas fa-fw fa-question-circle"></i>
+            <span>Parametres</span>
+        </a>
+    </li>
+
+
+   @*  <li class="nav-item">
+        <a class="nav-link" asp-controller="MaternalExperiences" asp-action="Index">Maternal Experiences</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" asp-controller="MaternalExperiencesThemes" asp-action="Index">Maternal Experiences Themes</a>
+    </li> *@
+
+</ul>
