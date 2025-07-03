@@ -752,7 +752,7 @@ namespace WebApplication_SRPFIQ.Migrations
 
                     b.HasIndex("IdResourceCategory");
 
-                    b.ToTable("Resources_ResourceCatégories", (string)null);
+                    b.ToTable("Resources_ResourceCategories", (string)null);
                 });
 
             modelBuilder.Entity("WebApplication_SRPFIQ.Models.UserAssignedRequests", b =>

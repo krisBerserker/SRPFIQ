@@ -10,23 +10,23 @@ using WebApplication_SRPFIQ.Models;
 
 namespace WebApplication_SRPFIQ.Controllers
 {
-    public class Resources_ResourceCatégoriesController : Controller
+    public class Resources_ResourceCategoriesController : Controller
     {
         private readonly SRPFIQDbContext _context;
 
-        public Resources_ResourceCatégoriesController(SRPFIQDbContext context)
+        public Resources_ResourceCategoriesController(SRPFIQDbContext context)
         {
             _context = context;
         }
 
-        // GET: Resources_ResourceCatégories
+        // GET: Resources_ResourceCategories
         public async Task<IActionResult> Index()
         {
             var sRPFIQDbContext = _context.Resources_ResourceCategories.Include(r => r.Resource).Include(r => r.ResourceCategory);
             return View(await sRPFIQDbContext.ToListAsync());
         }
 
-        // GET: Resources_ResourceCatégories/Details/5
+        // GET: Resources_ResourceCategories/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -46,7 +46,7 @@ namespace WebApplication_SRPFIQ.Controllers
             return View(resources_ResourceCatégories);
         }
 
-        // GET: Resources_ResourceCatégories/Create
+        // GET: Resources_ResourceCategories/Create
         public IActionResult Create()
         {
             ViewData["IdResource"] = new SelectList(_context.Resources, "ID", "Name");
@@ -54,7 +54,7 @@ namespace WebApplication_SRPFIQ.Controllers
             return View();
         }
 
-        // POST: Resources_ResourceCatégories/Create
+        // POST: Resources_ResourceCategories/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
@@ -72,7 +72,7 @@ namespace WebApplication_SRPFIQ.Controllers
             return View(resources_ResourceCategories);
         }
 
-        // GET: Resources_ResourceCatégories/Edit/5
+        // GET: Resources_ResourceCategories/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -90,7 +90,7 @@ namespace WebApplication_SRPFIQ.Controllers
             return View(resources_ResourceCategories);
         }
 
-        // POST: Resources_ResourceCatégories/Edit/5
+        // POST: Resources_ResourceCategories/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
@@ -127,7 +127,7 @@ namespace WebApplication_SRPFIQ.Controllers
             return View(resources_ResourceCategories);
         }
 
-        // GET: Resources_ResourceCatégories/Delete/5
+        // GET: Resources_ResourceCategories/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -147,7 +147,7 @@ namespace WebApplication_SRPFIQ.Controllers
             return View(resources_ResourceCatégories);
         }
 
-        // POST: Resources_ResourceCatégories/Delete/5
+        // POST: Resources_ResourceCategories/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
@@ -162,7 +162,7 @@ namespace WebApplication_SRPFIQ.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        private bool Resources_ResourceCatégoriesExists(int id)
+        private bool Resources_ResourceCategoriesExists(int id)
         {
             return _context.Resources_ResourceCategories.Any(e => e.ID == id);
         }
