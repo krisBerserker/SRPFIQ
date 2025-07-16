@@ -49,6 +49,9 @@ namespace WebApplication_SRPFIQ.Controllers
         public IActionResult Create()
         {
             ViewData["IdResourceCity"] = new SelectList(_context.ResourceCities, "ID", "Name");
+            ViewData["IdResourceCategorie"] = new SelectList(_context.ResourceCategories, "ID", "Name");
+            ViewData["IdResourceBusinnesHours"] = new SelectList(_context.ResourceBusinessHours, "ID");
+
             return View();
         }
 
@@ -66,6 +69,9 @@ namespace WebApplication_SRPFIQ.Controllers
                 return RedirectToAction(nameof(Index));
             }
             ViewData["IdResourceCity"] = new SelectList(_context.ResourceCities, "ID", "Name", resources.IdResourceCity);
+            ViewData["IdResourceCategorie"] = new SelectList(_context.ResourceCategories, "ID", "Name", resources.Resources_ResourceCategories);
+            ViewData["IdResourceBusinnesHours"] = new SelectList(_context.ResourceBusinessHours, "ID","OpeningTime", resources.BusNearBy);
+
             return View(resources);
         }
 
@@ -83,6 +89,10 @@ namespace WebApplication_SRPFIQ.Controllers
                 return NotFound();
             }
             ViewData["IdResourceCity"] = new SelectList(_context.ResourceCities, "ID", "Name", resources.IdResourceCity);
+            ViewData["IdResourceCategorie"] = new SelectList(_context.ResourceCategories, "ID", "Name", resources.Resources_ResourceCategories);
+            ViewData["IdResourceBusinnesHours"] = new SelectList(_context.ResourceBusinessHours, "ID", "OpeningTime", resources.BusNearBy);
+
+
             return View(resources);
         }
 
