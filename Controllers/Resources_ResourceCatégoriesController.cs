@@ -111,7 +111,7 @@ namespace WebApplication_SRPFIQ.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!Resources_ResourceCatégoriesExists(resources_ResourceCategories.ID))
+                    if (!Resources_ResourceCategoriesExists(resources_ResourceCategories.ID))
                     {
                         return NotFound();
                     }
