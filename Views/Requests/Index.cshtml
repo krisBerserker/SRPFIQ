@@ -1,27 +1,31 @@
-﻿@model IEnumerable<WebApplication_SRPFIQ.Models.Requests>
+﻿@* @model IEnumerable<WebApplication_SRPFIQ.Models.Requests> *@
+@model IEnumerable<WebApplication_SRPFIQ.DTOs.RequestRelaiDTO>
 
 @{
     ViewData["Title"] = "Index";
 }
 
-<h1>Requests</h1>
+<h1>Mes demandes</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <div class="text-end">
+        <button>En cours</button>
+        <button>Terminée</button>
+    </div>
 </p>
 <table class="table">
     <thead>
         <tr>
-            <th>
+         @*    <th>
                 @Html.DisplayNameFor(model => model.ID)
+            </th> *@
+            <th>
+                @Html.DisplayNameFor(model => model.NumberFolio)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.FolioNumber)
+                @Html.DisplayNameFor(model => model.NameMother)
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.FullName)
-            </th>
-            <th>
+          @*   <th>
                 @Html.DisplayNameFor(model => model.MedicalCoverage)
             </th>
             <th>
@@ -38,11 +42,22 @@
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.ZipCode)
+            </th> *@
+            <th>
+                @Html.DisplayNameFor(model => model.DPA)
+            </th>
+
+            <th>
+                @Html.DisplayNameFor(model=> model.DateDernierSuivi)
+            </th>
+
+            <th>
+                @Html.DisplayNameFor(model => model.Evaluation)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.EstimatedDeliveryDate)
+                @Html.DisplayNameFor(model => model.VecuMaternel)
             </th>
-            <th>
+           @*  <th>
                 @Html.DisplayNameFor(model => model.NbPregnancy)
             </th>
             <th>
@@ -72,22 +87,23 @@
             <th>
                 @Html.DisplayNameFor(model => model.UserClosedBy)
             </th>
-            <th></th>
+            <th></th> *@
         </tr>
     </thead>
     <tbody>
 @foreach (var item in Model) {
         <tr>
-                <td>
+               @*  <td>
                     @Html.DisplayFor(modelItem => item.ID)
-                </td>
+                </td> *@
             <td>
-                @Html.DisplayFor(modelItem => item.FolioNumber)
+                @Html.DisplayFor(modelItem => item.NumberFolio)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.FullName)
+                @Html.DisplayFor(modelItem => item.NameMother)
             </td>
-            <td>
+             
+           @*  <td>
                 @Html.DisplayFor(modelItem => item.MedicalCoverage)
             </td>
             <td>
@@ -104,11 +120,21 @@
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.ZipCode)
-            </td>
+            </td> *@
             <td>
-                @Html.DisplayFor(modelItem => item.EstimatedDeliveryDate)
+                @Html.DisplayFor(modelItem => item.DPA)
             </td>
-            <td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DateDernierSuivi)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Evaluation)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.VecuMaternel)
+                </td>
+               
+            @* <td>
                 @Html.DisplayFor(modelItem => item.NbPregnancy)
             </td>
             <td>
@@ -137,11 +163,10 @@
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.UserClosedBy.FirstName)
-            </td>
+            </td> *@
             <td>
-                <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.ID">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
+                <a asp-action="Details" asp-route-id="@item.ID">Consulter</a> |
+                <a asp-action="Delete" asp-route-id="@item.ID">Ajouter un suivi</a>
             </td>
         </tr>
 }
