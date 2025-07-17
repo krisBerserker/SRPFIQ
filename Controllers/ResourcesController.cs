@@ -79,11 +79,13 @@ namespace WebApplication_SRPFIQ.Controllers
         // GET: Resources/Create
         public IActionResult Create()
         {
-            ViewData["IdResourceCity"] = new SelectList(_context.ResourceCities, "ID", "Name");
-            ViewData["IdResourceCategorie"] = new SelectList(_context.ResourceCategories, "ID", "Name");
-            ViewData["IdResourceBusinnesHours"] = new SelectList(_context.ResourceBusinessHours, "ID");
+            var model = new ResourceCreateViewModel
+            {
+                Cities = _context.ResourceCities.Select(c => new SelectListItem { Value = c.ID.ToString(), Text = c.Name }).ToList(),
+                Categories = _context.ResourceCategories.Select(c => new SelectListItem { Value = c.ID.ToString(), Text = c.Name }).ToList()
+            };
 
-            return View();
+            return View(model);
         }
 
         // POST: Resources/Create
@@ -91,19 +93,60 @@ namespace WebApplication_SRPFIQ.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,Name,PhoneNumber,IdResourceCity,Adresse,BusNearBy")] Resources resources)
+        public async Task<IActionResult> Create(ResourceCreateViewModel model)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                _context.Add(resources);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            ViewData["IdResourceCity"] = new SelectList(_context.ResourceCities, "ID", "Name", resources.IdResourceCity);
-            ViewData["IdResourceCategorie"] = new SelectList(_context.ResourceCategories, "ID", "Name", resources.Resources_ResourceCategories);
-            ViewData["IdResourceBusinnesHours"] = new SelectList(_context.ResourceBusinessHours, "ID","OpeningTime", resources.BusNearBy);
+                // Recharger les listes en cas d'erreur
+                model.Cities = _context.ResourceCities
+                    .Select(c => new SelectListItem { Value = c.ID.ToString(), Text = c.Name })
+                    .ToList();
 
-            return View(resources);
+                model.Categories = _context.ResourceCategories
+                    .Select(c => new SelectListItem { Value = c.ID.ToString(), Text = c.Name })
+                    .ToList();
+
+                return View(model);
+            }
+
+            // 🧱 Création de la ressource principale
+            var ressource = new Resources
+            {
+                Name = model.Nom,
+                IdResourceCity = model.SelectedCityId,
+                BusNearBy = string.Join(",", model.BusList),
+                Resources_ResourceCategories = new List<Resources_ResourceCategories>(),
+                ResourceBusinessHours = new List<ResourceBusinessHours>()
+            };
+
+            // 🏷️ Lien vers les catégories sélectionnées
+            foreach (var catId in model.SelectedCategoryIds.Distinct())
+            {
+                ressource.Resources_ResourceCategories.Add(new Resources_ResourceCategories
+                {
+                    IdResourceCategory = catId
+                });
+            }
+
+            // Horaire : chaque ligne peut avoir plusieurs jours → une ligne par jour
+            foreach (var horaire in model.BusinessHours)
+            {
+                foreach (var jour in horaire.Days)
+                {
+                    ressource.ResourceBusinessHours.Add(new ResourceBusinessHours
+                    {
+                        DayOfWeek = jour,
+                        OpeningTime = horaire.Opening,
+                        ClosingTime = horaire.Closing
+                    });
+                }
+            }
+
+            // Sauvegarde
+            _context.Resources.Add(ressource);
+            _context.SaveChanges();
+
+            return RedirectToAction("Index");
         }
 
         // GET: Resources/Edit/5
