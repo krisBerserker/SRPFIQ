@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using WebApplication_SRPFIQ.Data;
 using WebApplication_SRPFIQ.Models;
+using WebApplication_SRPFIQ.ViewModel;
 
 namespace WebApplication_SRPFIQ.Controllers
 {
@@ -20,10 +21,40 @@ namespace WebApplication_SRPFIQ.Controllers
         }
 
         // GET: Resources
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? SelectedCategorieId, int? SelectedCityId, string SelectedBus)
         {
-            var sRPFIQDbContext = _context.Resources.Include(r => r.ResourceCity);
-            return View(await sRPFIQDbContext.ToListAsync());
+            var categories = _context.ResourceCategories
+           .Select(c => new SelectListItem { Value = c.ID.ToString(), Text = c.Name })
+           .ToList();
+
+            var quartiers = _context.Resources
+                .Select(r => r.ResourceCity)
+                .Distinct()
+                .Select(q => new SelectListItem { Value = q.Name, Text = q.Name })
+                .ToList();
+
+            var query = _context.Resources.Include(r => r.Resources_ResourceCategories).AsQueryable();
+
+            if (SelectedCategorieId.HasValue)
+                query = query.Where(r => r.ID == SelectedCategorieId);
+
+            if (SelectedCityId.HasValue)
+                query = query.Where(r => r.IdResourceCity == SelectedCityId);
+
+            if (!string.IsNullOrEmpty(SelectedBus))
+                query = query.Where(r => r.BusNearBy.Contains(SelectedBus));
+
+            var model = new RessourceSearchViewModel
+            {
+                Categories = categories,
+                Quartiers = quartiers,
+                SelectedCategorieId = SelectedCategorieId,
+                SelectedCityId = SelectedCityId,
+                SelectedBus = SelectedBus,
+                Resultats = query.ToList()
+            };
+
+            return View(model);
         }
 
         // GET: Resources/Details/5

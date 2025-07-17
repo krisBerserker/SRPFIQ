@@ -1,40 +1,43 @@
-﻿@model IEnumerable<WebApplication_SRPFIQ.Models.Resources>
+﻿@model WebApplication_SRPFIQ.ViewModel.RessourceSearchViewModel
 
 @{
     ViewData["Title"] = "Index";
 }
 
-<h1>Gestion des Ressources </h1>
+<h1>Liste des Ressources </h1>
 
 <p>
     <a asp-action="Create">Ajouter une ressource</a>
 </p>
-<table class="table">
+
+<form method="get" asp-action="Index" class="mb-3">
+    <label>Service</label>
+    @Html.DropDownListFor(m => m.SelectedCategorieId, Model.Categories, "Tous", new { @class = "form-control" })
+
+    <label>Quartier</label>
+    @Html.DropDownListFor(m => m.SelectedCityId, Model.Quartiers, "Tous", new { @class = "form-control" })
+
+    <label>Autobus</label>
+    <input type="text" name="SelectedBus" value="@Model.SelectedBus" class="form-control" />
+
+    <button type="submit" class="btn btn-primary mt-2">Rechercher</button>
+</form>
+
+
+<table class="table table-bordered">
     <thead>
         <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.ID)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Name)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.PhoneNumber)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Adresse)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.BusNearBy)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ResourceCity)
-            </th>
-            <th></th>
+            <th>Nom</th>
+            <th>Services</th>
+            <th>Telephone</th>
+            <th>Quartier</th>
+            <th>Adresse</th>
+            <th>Horaire</th>
+            <th>Autobus</th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
+@foreach (var item in Model.Resultats) {
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.ID)
