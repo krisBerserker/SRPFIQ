@@ -14,5 +14,7 @@ namespace WebApplication_SRPFIQ.Models
         public bool Active { get; set; } = true; //Détermine si le quartier est disponible pour sélection
         [DisplayName("Date de création système du quartier")]
         public DateTime CreatedDate { get; set; }
+        public ICollection<Resources> Resources { get; set; }
+
     }
 }

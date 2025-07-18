@@ -1,4 +1,4 @@
-﻿@model WebApplication_SRPFIQ.ViewModel.RessourceSearchViewModel
+﻿@model WebApplication_SRPFIQ.ViewModel.ResourceSearchViewModel
 
 @{
     ViewData["Title"] = "Index";
@@ -15,7 +15,7 @@
     @Html.DropDownListFor(m => m.SelectedCategorieId, Model.Categories, "Tous", new { @class = "form-control" })
 
     <label>Quartier</label>
-    @Html.DropDownListFor(m => m.SelectedCityId, Model.Quartiers, "Tous", new { @class = "form-control" })
+    @Html.DropDownListFor(m => m.SelectedCityId, Model.Cities, "Tous", new { @class = "form-control" })
 
     <label>Autobus</label>
     <input type="text" name="SelectedBus" value="@Model.SelectedBus" class="form-control" />
@@ -27,13 +27,14 @@
 <table class="table table-bordered">
     <thead>
         <tr>
+            <th>ID</th>
             <th>Nom</th>
-            <th>Services</th>
             <th>Telephone</th>
             <th>Quartier</th>
             <th>Adresse</th>
             <th>Horaire</th>
             <th>Autobus</th>
+            <th>Actions</th>
         </tr>
     </thead>
     <tbody>
@@ -48,14 +49,22 @@
             <td>
                 @Html.DisplayFor(modelItem => item.PhoneNumber)
             </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ResourceCity.Name)
+                </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Adresse)
             </td>
+                <td>
+                    @foreach (var h in item.ResourceBusinessHours?.OrderBy(h => h.DayOfWeek) ?? Enumerable.Empty<ResourceBusinessHours>())
+                    {
+                        <div>
+                            @h.DayOfWeek : @h.OpeningTime.ToString(@"hh\:mm") - @h.ClosingTime.ToString(@"hh\:mm")
+                        </div>
+                    }
+                </td>
             <td>
                 @Html.DisplayFor(modelItem => item.BusNearBy)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ResourceCity.Name)
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |

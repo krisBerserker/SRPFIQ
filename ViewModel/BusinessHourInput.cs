@@ -6,7 +6,7 @@
         public TimeOnly Closing { get; set; }
 
         // Un même bloc horaire peut s'appliquer à plusieurs jours
-        public List<string> Days { get; set; } = new();
+        public List<int> Days { get; set; } = new();
     }
 
 }

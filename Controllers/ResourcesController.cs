@@ -24,19 +24,25 @@ namespace WebApplication_SRPFIQ.Controllers
         public async Task<IActionResult> Index(int? SelectedCategorieId, int? SelectedCityId, string SelectedBus)
         {
             var categories = _context.ResourceCategories
-           .Select(c => new SelectListItem { Value = c.ID.ToString(), Text = c.Name })
-           .ToList();
+         .Select(c => new SelectListItem { Value = c.ID.ToString(), Text = c.Name })
+         .ToList();
 
-            var quartiers = _context.Resources
-                .Select(r => r.ResourceCity)
-                .Distinct()
-                .Select(q => new SelectListItem { Value = q.Name, Text = q.Name })
+            var villes = _context.ResourceCities
+                .Select(v => new SelectListItem { Value = v.ID.ToString(), Text = v.Name })
                 .ToList();
 
-            var query = _context.Resources.Include(r => r.Resources_ResourceCategories).AsQueryable();
+            var query = _context.Resources
+                .Include(r => r.ResourceCity)
+                .Include(r => r.ResourceBusinessHours)
+                .Include(r => r.Resources_ResourceCategories)
+                    .ThenInclude(rc => rc.ResourceCategory)
+                .AsQueryable();
 
             if (SelectedCategorieId.HasValue)
-                query = query.Where(r => r.ID == SelectedCategorieId);
+            {
+                query = query.Where(r => r.Resources_ResourceCategories
+                    .Any(rc => rc.IdResourceCategory == SelectedCategorieId));
+            }
 
             if (SelectedCityId.HasValue)
                 query = query.Where(r => r.IdResourceCity == SelectedCityId);
@@ -44,18 +50,30 @@ namespace WebApplication_SRPFIQ.Controllers
             if (!string.IsNullOrEmpty(SelectedBus))
                 query = query.Where(r => r.BusNearBy.Contains(SelectedBus));
 
-            var model = new RessourceSearchViewModel
+            var model = new ResourceSearchViewModel
             {
                 Categories = categories,
-                Quartiers = quartiers,
+                Cities = villes,
                 SelectedCategorieId = SelectedCategorieId,
                 SelectedCityId = SelectedCityId,
                 SelectedBus = SelectedBus,
                 Resultats = query.ToList()
             };
 
+            try
+            {
+                model.Resultats = await query.ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                throw;
+            }
+
             return View(model);
+
         }
+
 
         // GET: Resources/Details/5
         public async Task<IActionResult> Details(int? id)
@@ -109,7 +127,7 @@ namespace WebApplication_SRPFIQ.Controllers
                 return View(model);
             }
 
-            // 🧱 Création de la ressource principale
+            // Création de la ressource principale
             var ressource = new Resources
             {
                 Name = model.Nom,
@@ -119,7 +137,7 @@ namespace WebApplication_SRPFIQ.Controllers
                 ResourceBusinessHours = new List<ResourceBusinessHours>()
             };
 
-            // 🏷️ Lien vers les catégories sélectionnées
+            // Lien vers les catégories sélectionnées
             foreach (var catId in model.SelectedCategoryIds.Distinct())
             {
                 ressource.Resources_ResourceCategories.Add(new Resources_ResourceCategories
@@ -135,7 +153,7 @@ namespace WebApplication_SRPFIQ.Controllers
                 {
                     ressource.ResourceBusinessHours.Add(new ResourceBusinessHours
                     {
-                        DayOfWeek = jour,
+                        DayOfWeek = (DaysOfWeek)jour,
                         OpeningTime = horaire.Opening,
                         ClosingTime = horaire.Closing
                     });
