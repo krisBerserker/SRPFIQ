@@ -8,14 +8,29 @@
 
 <form asp-action="Create" method="post">
     <div class="form-group">
-        <label>Nom</label>
+        <label asp-for="Nom"></label>
         <input asp-for="Nom" class="form-control" />
+        <span asp-validation-for="Nom" class="text-danger"></span>
     </div>
 
     <div class="form-group">
-        <label>Quartier</label>
-        @Html.DropDownListFor(m => m.SelectedCityId, Model.Cities, "Choisir...", new { @class = "form-control" })
+        <label asp-for="PhoneNumber"></label>
+        <input asp-for="PhoneNumber" class="form-control" />
+        <span asp-validation-for="PhoneNumber" class="text-danger"></span>
     </div>
+
+    <div class="form-group">
+        <label asp-for="Adresse"></label>
+        <input asp-for="Adresse" class="form-control" />
+        <span asp-validation-for="Adresse" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="SelectedCityId"></label>
+        @Html.DropDownListFor(m => m.SelectedCityId, Model.Cities, "Choisir une ville ...", new { @class = "form-control" })
+        <span asp-validation-for="SelectedCityId" class="text-danger"></span>
+    </div>
+
 
     <hr />
 
@@ -23,7 +38,7 @@
     <div class="form-group">
         <label>Catégories</label>
         <div class="input-group">
-            @Html.DropDownList("SelectedCategory", Model.Categories, new { @class = "form-control", id = "categorySelect" })
+            @Html.DropDownList("SelectedCategoryIds", Model.Categories, new { @class = "form-control", id = "categorySelect" })
             <button type="button" class="btn btn-secondary" onclick="ajouterCategorie()">+</button>
         </div>
         <table class="table mt-2" id="tableCategories">
@@ -73,7 +88,29 @@
     <button type="submit" class="btn btn-primary">Sauvegarder</button>
 </form>
 
+
+@* Les messages de validation *@
+
+@if (!ViewData.ModelState.IsValid)
+{
+    <div class="alert alert-danger">
+        @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+        {
+            <p>@error.ErrorMessage</p>
+        }
+    </div>
+}
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["SuccessMessage"]
+    </div>
+}
+
 @section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
     <script>
         // Ajouter une catégorie à la table
         function ajouterCategorie() {

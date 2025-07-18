@@ -115,7 +115,7 @@ namespace WebApplication_SRPFIQ.Controllers
         {
             if (!ModelState.IsValid)
             {
-                // Recharger les listes en cas d'erreur
+                // Recharger les listes
                 model.Cities = _context.ResourceCities
                     .Select(c => new SelectListItem { Value = c.ID.ToString(), Text = c.Name })
                     .ToList();
@@ -127,44 +127,66 @@ namespace WebApplication_SRPFIQ.Controllers
                 return View(model);
             }
 
-            // Création de la ressource principale
-            var ressource = new Resources
+            try
             {
-                Name = model.Nom,
-                IdResourceCity = model.SelectedCityId,
-                BusNearBy = string.Join(",", model.BusList),
-                Resources_ResourceCategories = new List<Resources_ResourceCategories>(),
-                ResourceBusinessHours = new List<ResourceBusinessHours>()
-            };
-
-            // Lien vers les catégories sélectionnées
-            foreach (var catId in model.SelectedCategoryIds.Distinct())
-            {
-                ressource.Resources_ResourceCategories.Add(new Resources_ResourceCategories
+                // Création de la ressource principale
+                var ressource = new Resources
                 {
-                    IdResourceCategory = catId
-                });
-            }
+                    Name = model.Nom,
+                    PhoneNumber = model.PhoneNumber,
+                    Adresse = model.Adresse,
+                    IdResourceCity = model.SelectedCityId,
+                    BusNearBy = string.Join(",", model.BusList),
+                    Resources_ResourceCategories = new List<Resources_ResourceCategories>(),
+                    ResourceBusinessHours = new List<ResourceBusinessHours>()
+                };
 
-            // Horaire : chaque ligne peut avoir plusieurs jours → une ligne par jour
-            foreach (var horaire in model.BusinessHours)
-            {
-                foreach (var jour in horaire.Days)
+                // Lien vers les catégories sélectionnées
+                foreach (var catId in model.SelectedCategoryIds.Distinct())
                 {
-                    ressource.ResourceBusinessHours.Add(new ResourceBusinessHours
+                    ressource.Resources_ResourceCategories.Add(new Resources_ResourceCategories
                     {
-                        DayOfWeek = (DaysOfWeek)jour,
-                        OpeningTime = horaire.Opening,
-                        ClosingTime = horaire.Closing
+                        IdResourceCategory = catId
                     });
                 }
+
+                // Horaire : chaque ligne peut avoir plusieurs jours → une ligne par jour
+                foreach (var horaire in model.BusinessHours)
+                {
+                    foreach (var jour in horaire.Days)
+                    {
+                        ressource.ResourceBusinessHours.Add(new ResourceBusinessHours
+                        {
+                            DayOfWeek = (DaysOfWeek)jour,
+                            OpeningTime = horaire.Opening,
+                            ClosingTime = horaire.Closing
+                        });
+                    }
+                }
+
+                // Sauvegarde
+                _context.Resources.Add(ressource);
+                await _context.SaveChangesAsync();
+
+                TempData["SuccessMessage"] = "Ressource créée avec succès.";
+                return RedirectToAction("Index");
             }
+            catch (Exception ex)
+            {
+                // Log (si nécessaire) + message d'erreur utilisateur
+                ModelState.AddModelError("", "Une erreur s’est produite lors de la création de la ressource : " + ex.Message);
 
-            // Sauvegarde
-            _context.Resources.Add(ressource);
-            _context.SaveChanges();
+                // Recharger les listes
+                model.Cities = _context.ResourceCities
+                    .Select(c => new SelectListItem { Value = c.ID.ToString(), Text = c.Name })
+                    .ToList();
 
-            return RedirectToAction("Index");
+                model.Categories = _context.ResourceCategories
+                    .Select(c => new SelectListItem { Value = c.ID.ToString(), Text = c.Name })
+                    .ToList();
+
+                return View(model);
+            }
         }
 
         // GET: Resources/Edit/5
