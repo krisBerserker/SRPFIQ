@@ -7,6 +7,8 @@ namespace WebApplication_SRPFIQ.ViewModel
 {
     public class ResourceCreateViewModel
     {
+        public int? Id { get; set; }
+
         [Required(ErrorMessage = "Veuillez entrer le nom de la ressource.")]
         [Display(Name = "Nom")]
         public string Nom { get; set; }

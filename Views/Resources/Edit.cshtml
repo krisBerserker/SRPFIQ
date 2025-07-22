@@ -1,54 +1,268 @@
-﻿@model WebApplication_SRPFIQ.Models.Resources
-
+﻿@using WebApplication_SRPFIQ.ViewModel
+@model ResourceCreateViewModel
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Modifier une ressource";
 }
 
-<h1>Edit</h1>
+<h2>Modifier une ressource</h2>
 
-<h4>Resources</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="ID" />
-            <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="PhoneNumber" class="control-label"></label>
-                <input asp-for="PhoneNumber" class="form-control" />
-                <span asp-validation-for="PhoneNumber" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="IdResourceCity" class="control-label"></label>
-                <select asp-for="IdResourceCity" class="form-control" asp-items="ViewBag.IdResourceCity"></select>
-                <span asp-validation-for="IdResourceCity" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Adresse" class="control-label"></label>
-                <input asp-for="Adresse" class="form-control" />
-                <span asp-validation-for="Adresse" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="BusNearBy" class="control-label"></label>
-                <input asp-for="BusNearBy" class="form-control" />
-                <span asp-validation-for="BusNearBy" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
-        </form>
+<form asp-action="Edit" method="post">
+    <input type="hidden" asp-for="Id" />
+
+    <div class="form-group">
+        <label asp-for="Nom"></label>
+        <input asp-for="Nom" class="form-control" />
+        <span asp-validation-for="Nom" class="text-danger"></span>
     </div>
-</div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
+    <div class="form-group">
+        <label asp-for="PhoneNumber"></label>
+        <input asp-for="PhoneNumber" class="form-control" />
+        <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Adresse"></label>
+        <input asp-for="Adresse" class="form-control" />
+        <span asp-validation-for="Adresse" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="SelectedCityId"></label>
+        @Html.DropDownListFor(m => m.SelectedCityId, Model.Cities, "Choisir une ville ...", new { @class = "form-control" })
+        <span asp-validation-for="SelectedCityId" class="text-danger"></span>
+    </div>
+
+
+    <hr />
+
+    <!-- CATEGORIES -->
+    <div class="form-group">
+        <label>Catégories</label>
+        <div class="input-group">
+            @Html.DropDownList("SelectedCategoryIds", Model.Categories, new { @class = "form-control", id = "categorySelect" })
+            <button type="button" class="btn btn-secondary" onclick="ajouterCategorie()">+</button>
+        </div>
+        <table class="table mt-2" id="tableCategories">
+            <thead><tr><th>Catégorie</th><th></th></tr></thead>
+            <tbody></tbody>
+        </table>
+    </div>
+
+    <!-- AUTOBUS -->
+    <div class="form-group">
+        <label>Autobus</label>
+        <div class="input-group">
+            <input type="text" id="busInput" class="form-control" placeholder="Ex: 807" />
+            <button type="button" class="btn btn-secondary" onclick="ajouterBus()">+</button>
+        </div>
+        <table class="table mt-2" id="tableBus">
+            <thead><tr><th># Autobus</th><th></th></tr></thead>
+            <tbody></tbody>
+        </table>
+    </div>
+
+    <!-- HORAIRE -->
+    <div class="form-group">
+        <label>Horaire</label>
+        <div>
+            <input type="time" id="openHour" />
+            <input type="time" id="closeHour" />
+            <span>Jours :</span>
+            @{
+                var jours = new[] { "Dimanche", "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi" };
+                foreach (var jour in jours)
+                {
+                    <label class="mx-1">
+                        <input type="checkbox" class="dayCheckbox" value="@jour" /> @jour
+                    </label>
+                }
+            }
+            <button type="button" class="btn btn-secondary" onclick="ajouterHoraire()">+</button>
+        </div>
+
+        <table class="table mt-2" id="tableHoraires">
+            <thead><tr><th>Ouverture</th><th>Fermeture</th><th>Jours</th><th></th></tr></thead>
+            <tbody></tbody>
+        </table>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Sauvegarder</button>
+</form>
+
+
+@* Les messages de validation *@
+
+@if (!ViewData.ModelState.IsValid)
+{
+    <div class="alert alert-danger">
+        @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+        {
+            <p>@error.ErrorMessage</p>
+        }
+    </div>
+}
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["SuccessMessage"]
+    </div>
+}
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        // Ajouter une catégorie à la table
+        function ajouterCategorie() {
+            const select = document.getElementById('categorySelect');
+            const selectedId = select.value;
+            const selectedText = select.options[select.selectedIndex].text;
+
+            if (!selectedId || document.querySelector(`#cat-row-${selectedId}`)) return;
+
+            const tbody = document.querySelector('#tableCategories tbody');
+            const row = document.createElement('tr');
+            row.id = `cat-row-${selectedId}`;
+            row.innerHTML = `
+                <td>${selectedText}</td>
+                <td>
+                    <button type="button" class="btn btn-sm btn-danger" onclick="this.closest('tr').remove()">Supprimer</button>
+                    <input type="hidden" name="SelectedCategoryIds" value="${selectedId}" />
+                </td>
+            `;
+            tbody.appendChild(row);
+        }
+
+        // Ajouter un autobus à la table
+        function ajouterBus() {
+            const input = document.getElementById('busInput');
+            const busValue = input.value.trim();
+
+            if (!busValue) return;
+
+            const tbody = document.querySelector('#tableBus tbody');
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${busValue}</td>
+                <td>
+                    <button type="button" class="btn btn-sm btn-danger" onclick="this.closest('tr').remove()">Supprimer</button>
+                    <input type="hidden" name="BusList" value="${busValue}" />
+                </td>
+            `;
+            tbody.appendChild(row);
+            input.value = '';
+        }
+
+        // Ajouter une ligne horaire
+        function ajouterHoraire() {
+            const open = document.getElementById('openHour').value;
+            const close = document.getElementById('closeHour').value;
+            const checkboxes = document.querySelectorAll('.dayCheckbox:checked');
+            const days = Array.from(checkboxes).map(cb => cb.value);
+
+            if (!open || !close || days.length === 0) return;
+
+            const tbody = document.querySelector('#tableHoraires tbody');
+            const row = document.createElement('tr');
+            const rowIndex = Date.now(); // identifiant unique
+
+            row.innerHTML = `
+                <td>${open}</td>
+                <td>${close}</td>
+                <td>${days.join(', ')}</td>
+                <td>
+                    <button type="button" class="btn btn-sm btn-danger" onclick="this.closest('tr').remove()">Supprimer</button>
+                    <input type="hidden" name="BusinessHours[${rowIndex}].Opening" value="${open}" />
+                    <input type="hidden" name="BusinessHours[${rowIndex}].Closing" value="${close}" />
+                    ${days.map(d => `<input type="hidden" name="BusinessHours[${rowIndex}].Days" value="${d}" />`).join('')}
+                </td>
+            `;
+            tbody.appendChild(row);
+
+            // Réinitialiser les champs
+            document.getElementById('openHour').value = '';
+            document.getElementById('closeHour').value = '';
+            checkboxes.forEach(cb => cb.checked = false);
+        }
+
+             window.onload = function () {
+            // === Catégories déjà associées ===
+        @foreach (var cat in Model.SelectedCategoryIds ?? new List<int>())
+        {
+            var nomCategorie = Model.Categories.FirstOrDefault(c => c.Value == cat.ToString())?.Text;
+            if (!string.IsNullOrEmpty(nomCategorie))
+            {
+                @:ajouterCategorieExistant(@cat, '@nomCategorie');
+            }
+        }
+
+            function ajouterCategorieExistant(id, nom) {
+                if (document.querySelector(`#cat-row-${id}`)) return;
+
+                const tbody = document.querySelector('#tableCategories tbody');
+                const row = document.createElement('tr');
+                row.id = `cat-row-${id}`;
+                row.innerHTML = `
+                    <td>${nom}</td>
+                    <td>
+                        <button type="button" class="btn btn-sm btn-danger" onclick="this.closest('tr').remove()">Supprimer</button>
+                        <input type="hidden" name="SelectedCategoryIds" value="${id}" />
+                    </td>
+                `;
+                tbody.appendChild(row);
+            }
+
+            // === Bus déjà enregistrés ===
+        @foreach (var bus in Model.BusList ?? new List<string>())
+        {
+            @:ajouterBusExistant('@bus');
+        }
+
+            function ajouterBusExistant(busValue) {
+                const tbody = document.querySelector('#tableBus tbody');
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${busValue}</td>
+                    <td>
+                        <button type="button" class="btn btn-sm btn-danger" onclick="this.closest('tr').remove()">Supprimer</button>
+                        <input type="hidden" name="BusList" value="${busValue}" />
+                    </td>
+                `;
+                tbody.appendChild(row);
+            }
+
+            // === Horaires déjà enregistrés ===
+        @if (Model.BusinessHours != null)
+        {
+            var index = 0;
+            foreach (var horaire in Model.BusinessHours)
+            {
+                var jours = string.Join(", ", horaire.Days);
+                var joursInputs = string.Join("", horaire.Days.Select(d => $"<input type='hidden' name='BusinessHours[{index}].Days' value='{d}' />"));
+
+                @:ajouterHoraireExistant('@horaire.Opening', '@horaire.Closing', '@jours', `@Html.Raw(joursInputs)`, @index);
+                index++;
+            }
+        }
+
+            function ajouterHoraireExistant(ouverture, fermeture, joursText, joursInputs, rowIndex) {
+                const tbody = document.querySelector('#tableHoraires tbody');
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${ouverture}</td>
+                    <td>${fermeture}</td>
+                    <td>${joursText}</td>
+                    <td>
+                        <button type="button" class="btn btn-sm btn-danger" onclick="this.closest('tr').remove()">Supprimer</button>
+                        <input type="hidden" name="BusinessHours[${rowIndex}].Opening" value="${ouverture}" />
+                        <input type="hidden" name="BusinessHours[${rowIndex}].Closing" value="${fermeture}" />
+                        ${joursInputs}
+                    </td>
+                `;
+                tbody.appendChild(row);
+            }
+        };
+    </script>
 }
