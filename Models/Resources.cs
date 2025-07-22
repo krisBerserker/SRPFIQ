@@ -28,5 +28,6 @@ namespace WebApplication_SRPFIQ.Models
 
         public ICollection<Resources_ResourceCategories> Resources_ResourceCategories { get; set; }
         public ICollection<ResourceBusinessHours> ResourceBusinessHours { get; set; }
+
     }
 }

@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Threading.Tasks;
+using Elfie.Serialization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -78,20 +80,32 @@ namespace WebApplication_SRPFIQ.Controllers
         // GET: Resources/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
 
-            var resources = await _context.Resources
+            var query = _context.Resources
                 .Include(r => r.ResourceCity)
-                .FirstOrDefaultAsync(m => m.ID == id);
-            if (resources == null)
+                .Include(r => r.ResourceBusinessHours)
+                .Include(r => r.Resources_ResourceCategories)
+                    .ThenInclude(rc => rc.ResourceCategory)
+                .FirstOrDefaultAsync(r => r.ID == id);
+
+           
+            if (query == null)
             {
                 return NotFound();
             }
-
-            return View(resources);
+            var model = new ResourceDetailsViewModel
+            {
+                Id = query.Result.ID,
+                Name = query.Result.Name,
+                PhoneNumber = query.Result.PhoneNumber,
+                Adresse = query.Result.Adresse,
+                Ville = query.Result.ResourceCity?.Name ?? "Non spécifié",
+                Categories = query.Result.Resources_ResourceCategories.Select(rc => rc.ResourceCategory.Name).ToList(),
+                BusNearBy = string.IsNullOrEmpty(query.Result.BusNearBy) ? new List<string>() : query.Result.BusNearBy.Split(',').ToList(),
+                businessHours = query.Result.ResourceBusinessHours.ToList()
+            };
+            
+            return View(model);
         }
 
         // GET: Resources/Create
@@ -155,9 +169,10 @@ namespace WebApplication_SRPFIQ.Controllers
                 {
                     foreach (var jour in horaire.Days)
                     {
+                        Console.WriteLine($"Jour: {jour}, Ouverture: {horaire.Opening}, Fermeture: {horaire.Closing}");
                         ressource.ResourceBusinessHours.Add(new ResourceBusinessHours
                         {
-                            DayOfWeek = (DaysOfWeek)jour,
+                            DayOfWeek = 0,
                             OpeningTime = horaire.Opening,
                             ClosingTime = horaire.Closing
                         });
