@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.EntityFrameworkCore;
 using WebApplication_SRPFIQ.Data;
 
@@ -11,7 +12,10 @@ namespace WebApplication_SRPFIQ
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
-            builder.Services.AddControllersWithViews();
+            builder.Services.AddControllersWithViews(options =>
+            {
+                options.Filters.Add(new AuthorizeFilter());
+            });
 
             builder.Services.AddDbContext<SRPFIQDbContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("SRPFIQConnection")));

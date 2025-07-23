@@ -22,7 +22,7 @@
         <li class="nav-item dropdown no-arrow">
             <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <span class="mr-2 d-none d-lg-inline text-gray-600 small">Utilisateur</span>
+                <span class="mr-2 d-none d-lg-inline text-gray-600 small">@User.Identity.Name</span>
                 <img class="img-profile rounded-circle" src="~/img/undraw_profile.svg" />
             </a>
             <!-- Dropdown - User Information -->
@@ -32,10 +32,14 @@
                     Profil
                 </a>
                 <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
-                    <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
-                    Déconnexion
-                </a>
+
+                <form asp-action="Logout" asp-controller="Account" method="post" class="dropdown-item p-0 m-0">
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="btn btn-link dropdown-item" style="width: 100%; text-align: left;">
+                        <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
+                        Déconnexion
+                    </button>
+                </form>
             </div>
         </li>
     </ul>
