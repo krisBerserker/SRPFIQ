@@ -228,7 +228,7 @@ namespace WebApplication_SRPFIQ.Controllers
                     {
                         Opening = bh.OpeningTime,
                         Closing = bh.ClosingTime,
-                        //Days = (DaysOfWeek) bh.DayOfWeek
+                        //Days = bh.DayOfWeek
                     })
                     .ToList(),
 

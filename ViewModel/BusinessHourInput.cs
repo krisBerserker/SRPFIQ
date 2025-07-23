@@ -1,4 +1,6 @@
-﻿namespace WebApplication_SRPFIQ.ViewModel
+﻿using WebApplication_SRPFIQ.Models;
+
+namespace WebApplication_SRPFIQ.ViewModel
 {
     public class BusinessHourInput
     {
