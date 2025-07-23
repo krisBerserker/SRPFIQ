@@ -31,7 +31,6 @@
         <span asp-validation-for="SelectedCityId" class="text-danger"></span>
     </div>
 
-
     <hr />
 
     <!-- CATEGORIES -->
@@ -68,11 +67,11 @@
             <input type="time" id="closeHour" />
             <span>Jours :</span>
             @{
-                var jours = new[] { "Dimanche", "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi" };
+                var jours = Enum.GetValues(typeof(WebApplication_SRPFIQ.Models.DaysOfWeek)).Cast<WebApplication_SRPFIQ.Models.DaysOfWeek>();
                 foreach (var jour in jours)
                 {
                     <label class="mx-1">
-                        <input type="checkbox" class="dayCheckbox" value="@jour" /> @jour
+                        <input type="checkbox" class="dayCheckbox" value="@((int)jour)" /> @jour
                     </label>
                 }
             }
@@ -87,9 +86,6 @@
 
     <button type="submit" class="btn btn-primary">Sauvegarder</button>
 </form>
-
-
-@* Les messages de validation *@
 
 @if (!ViewData.ModelState.IsValid)
 {
@@ -112,7 +108,6 @@
     <partial name="_ValidationScriptsPartial" />
 
     <script>
-        // Ajouter une catégorie à la table
         function ajouterCategorie() {
             const select = document.getElementById('categorySelect');
             const selectedId = select.value;
@@ -133,7 +128,6 @@
             tbody.appendChild(row);
         }
 
-        // Ajouter un autobus à la table
         function ajouterBus() {
             const input = document.getElementById('busInput');
             const busValue = input.value.trim();
@@ -153,36 +147,46 @@
             input.value = '';
         }
 
-        // Ajouter une ligne horaire
         function ajouterHoraire() {
             const open = document.getElementById('openHour').value;
             const close = document.getElementById('closeHour').value;
             const checkboxes = document.querySelectorAll('.dayCheckbox:checked');
-            const days = Array.from(checkboxes).map(cb => cb.value);
 
-            if (!open || !close || days.length === 0) return;
+            if (!open || !close || checkboxes.length === 0) return;
 
             const tbody = document.querySelector('#tableHoraires tbody');
-            const row = document.createElement('tr');
-            const rowIndex = Date.now(); // identifiant unique
+            let currentIndex = tbody.children.length;
 
+            // Récupérer les jours sélectionnés
+            let joursSelectionnes = [];
+            let joursTextes = [];
+
+            checkboxes.forEach(cb => {
+                joursSelectionnes.push(cb.value);
+                joursTextes.push(cb.nextSibling.textContent.trim());
+            });
+
+            const row = document.createElement('tr');
             row.innerHTML = `
                 <td>${open}</td>
                 <td>${close}</td>
-                <td>${days.join(', ')}</td>
+                <td>${joursTextes.join(", ")}</td>
                 <td>
-                    <button type="button" class="btn btn-sm btn-danger" onclick="this.closest('tr').remove()">Supprimer</button>
-                    <input type="hidden" name="BusinessHours[${rowIndex}].Opening" value="${open}" />
-                    <input type="hidden" name="BusinessHours[${rowIndex}].Closing" value="${close}" />
-                    ${days.map(d => `<input type="hidden" name="BusinessHours[${rowIndex}].Days" value="${d}" />`).join('')}
+                    <button type="button" class="btn btn-danger btn-sm" onclick="this.closest('tr').remove()">Supprimer</button>
+                    <input type="hidden" name="BusinessHours[${currentIndex}].Opening" value="${open}" />
+                    <input type="hidden" name="BusinessHours[${currentIndex}].Closing" value="${close}" />
+                    ${joursSelectionnes.map(j => `<input type="hidden" name="BusinessHours[${currentIndex}].Days" value="${j}" />`).join('')}
                 </td>
             `;
+
             tbody.appendChild(row);
 
-            // Réinitialiser les champs
+            // Reset inputs
             document.getElementById('openHour').value = '';
             document.getElementById('closeHour').value = '';
             checkboxes.forEach(cb => cb.checked = false);
         }
+
+
     </script>
 }

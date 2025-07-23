@@ -32,7 +32,7 @@ namespace WebApplication_SRPFIQ.ViewModel
         public List<int> SelectedCategoryIds { get; set; } = new();
         public List<string> BusList { get; set; } = new();
 
-        public List<BusinessHourInput> BusinessHours { get; set; } = new();
+        public List<BusinessHourInput> BusinessHours { get; set; } = new List<BusinessHourInput>();
     }
 
 

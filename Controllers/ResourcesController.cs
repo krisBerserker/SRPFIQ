@@ -172,7 +172,7 @@ namespace WebApplication_SRPFIQ.Controllers
                         Console.WriteLine($"Jour: {jour}, Ouverture: {horaire.Opening}, Fermeture: {horaire.Closing}");
                         ressource.ResourceBusinessHours.Add(new ResourceBusinessHours
                         {
-                            DayOfWeek = 0,
+                            DayOfWeek = (DaysOfWeek)jour,
                             OpeningTime = horaire.Opening,
                             ClosingTime = horaire.Closing
                         });
@@ -228,7 +228,7 @@ namespace WebApplication_SRPFIQ.Controllers
                     {
                         Opening = bh.OpeningTime,
                         Closing = bh.ClosingTime,
-                        //Days = bh.DayOfWeek
+                        //Days = (DaysOfWeek) bh.DayOfWeek
                     })
                     .ToList(),
 
