@@ -1,52 +1,192 @@
-﻿@model WebApplication_SRPFIQ.Models.Resources
-
+﻿@using WebApplication_SRPFIQ.ViewModel
+@model ResourceCreateViewModel
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Ajouter une ressource";
 }
 
-<h1>Create</h1>
+<h2>Ajouter une ressource</h2>
 
-<h4>Resources</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="PhoneNumber" class="control-label"></label>
-                <input asp-for="PhoneNumber" class="form-control" />
-                <span asp-validation-for="PhoneNumber" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="IdResourceCity" class="control-label"></label>
-                <select asp-for="IdResourceCity" class ="form-control" asp-items="ViewBag.IdResourceCity"></select>
-            </div>
-            <div class="form-group">
-                <label asp-for="Adresse" class="control-label"></label>
-                <input asp-for="Adresse" class="form-control" />
-                <span asp-validation-for="Adresse" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="BusNearBy" class="control-label"></label>
-                <input asp-for="BusNearBy" class="form-control" />
-                <span asp-validation-for="BusNearBy" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
+<form asp-action="Create" method="post">
+    <div class="form-group">
+        <label asp-for="Nom"></label>
+        <input asp-for="Nom" class="form-control" />
+        <span asp-validation-for="Nom" class="text-danger"></span>
     </div>
-</div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
+    <div class="form-group">
+        <label asp-for="PhoneNumber"></label>
+        <input asp-for="PhoneNumber" class="form-control" />
+        <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Adresse"></label>
+        <input asp-for="Adresse" class="form-control" />
+        <span asp-validation-for="Adresse" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="SelectedCityId"></label>
+        @Html.DropDownListFor(m => m.SelectedCityId, Model.Cities, "Choisir une ville ...", new { @class = "form-control" })
+        <span asp-validation-for="SelectedCityId" class="text-danger"></span>
+    </div>
+
+    <hr />
+
+    <!-- CATEGORIES -->
+    <div class="form-group">
+        <label>Catégories</label>
+        <div class="input-group">
+            @Html.DropDownList("SelectedCategoryIds", Model.Categories, new { @class = "form-control", id = "categorySelect" })
+            <button type="button" class="btn btn-secondary" onclick="ajouterCategorie()">+</button>
+        </div>
+        <table class="table mt-2" id="tableCategories">
+            <thead><tr><th>Catégorie</th><th></th></tr></thead>
+            <tbody></tbody>
+        </table>
+    </div>
+
+    <!-- AUTOBUS -->
+    <div class="form-group">
+        <label>Autobus</label>
+        <div class="input-group">
+            <input type="text" id="busInput" class="form-control" placeholder="Ex: 807" />
+            <button type="button" class="btn btn-secondary" onclick="ajouterBus()">+</button>
+        </div>
+        <table class="table mt-2" id="tableBus">
+            <thead><tr><th># Autobus</th><th></th></tr></thead>
+            <tbody></tbody>
+        </table>
+    </div>
+
+    <!-- HORAIRE -->
+    <div class="form-group">
+        <label>Horaire</label>
+        <div>
+            <input type="time" id="openHour" />
+            <input type="time" id="closeHour" />
+            <span>Jours :</span>
+            @{
+                var jours = Enum.GetValues(typeof(WebApplication_SRPFIQ.Models.DaysOfWeek)).Cast<WebApplication_SRPFIQ.Models.DaysOfWeek>();
+                foreach (var jour in jours)
+                {
+                    <label class="mx-1">
+                        <input type="checkbox" class="dayCheckbox" value="@((int)jour)" /> @jour
+                    </label>
+                }
+            }
+            <button type="button" class="btn btn-secondary" onclick="ajouterHoraire()">+</button>
+        </div>
+
+        <table class="table mt-2" id="tableHoraires">
+            <thead><tr><th>Ouverture</th><th>Fermeture</th><th>Jours</th><th></th></tr></thead>
+            <tbody></tbody>
+        </table>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Sauvegarder</button>
+</form>
+
+@if (!ViewData.ModelState.IsValid)
+{
+    <div class="alert alert-danger">
+        @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+        {
+            <p>@error.ErrorMessage</p>
+        }
+    </div>
+}
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["SuccessMessage"]
+    </div>
+}
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        function ajouterCategorie() {
+            const select = document.getElementById('categorySelect');
+            const selectedId = select.value;
+            const selectedText = select.options[select.selectedIndex].text;
+
+            if (!selectedId || document.querySelector(`#cat-row-${selectedId}`)) return;
+
+            const tbody = document.querySelector('#tableCategories tbody');
+            const row = document.createElement('tr');
+            row.id = `cat-row-${selectedId}`;
+            row.innerHTML = `
+                <td>${selectedText}</td>
+                <td>
+                    <button type="button" class="btn btn-sm btn-danger" onclick="this.closest('tr').remove()">Supprimer</button>
+                    <input type="hidden" name="SelectedCategoryIds" value="${selectedId}" />
+                </td>
+            `;
+            tbody.appendChild(row);
+        }
+
+        function ajouterBus() {
+            const input = document.getElementById('busInput');
+            const busValue = input.value.trim();
+
+            if (!busValue) return;
+
+            const tbody = document.querySelector('#tableBus tbody');
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${busValue}</td>
+                <td>
+                    <button type="button" class="btn btn-sm btn-danger" onclick="this.closest('tr').remove()">Supprimer</button>
+                    <input type="hidden" name="BusList" value="${busValue}" />
+                </td>
+            `;
+            tbody.appendChild(row);
+            input.value = '';
+        }
+
+        function ajouterHoraire() {
+            const open = document.getElementById('openHour').value;
+            const close = document.getElementById('closeHour').value;
+            const checkboxes = document.querySelectorAll('.dayCheckbox:checked');
+
+            if (!open || !close || checkboxes.length === 0) return;
+
+            const tbody = document.querySelector('#tableHoraires tbody');
+            let currentIndex = tbody.children.length;
+
+            // Récupérer les jours sélectionnés
+            let joursSelectionnes = [];
+            let joursTextes = [];
+
+            checkboxes.forEach(cb => {
+                joursSelectionnes.push(cb.value);
+                joursTextes.push(cb.nextSibling.textContent.trim());
+            });
+
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${open}</td>
+                <td>${close}</td>
+                <td>${joursTextes.join(", ")}</td>
+                <td>
+                    <button type="button" class="btn btn-danger btn-sm" onclick="this.closest('tr').remove()">Supprimer</button>
+                    <input type="hidden" name="BusinessHours[${currentIndex}].Opening" value="${open}" />
+                    <input type="hidden" name="BusinessHours[${currentIndex}].Closing" value="${close}" />
+                    ${joursSelectionnes.map(j => `<input type="hidden" name="BusinessHours[${currentIndex}].Days" value="${j}" />`).join('')}
+                </td>
+            `;
+
+            tbody.appendChild(row);
+
+            // Reset inputs
+            document.getElementById('openHour').value = '';
+            document.getElementById('closeHour').value = '';
+            checkboxes.forEach(cb => cb.checked = false);
+        }
+
+
+    </script>
 }

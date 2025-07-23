@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Threading.Tasks;
+using Elfie.Serialization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using WebApplication_SRPFIQ.Data;
 using WebApplication_SRPFIQ.Models;
+using WebApplication_SRPFIQ.ViewModel;
 
 namespace WebApplication_SRPFIQ.Controllers
 {
@@ -20,36 +23,101 @@ namespace WebApplication_SRPFIQ.Controllers
         }
 
         // GET: Resources
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? SelectedCategorieId, int? SelectedCityId, string SelectedBus)
         {
-            var sRPFIQDbContext = _context.Resources.Include(r => r.ResourceCity);
-            return View(await sRPFIQDbContext.ToListAsync());
+            var categories = _context.ResourceCategories
+         .Select(c => new SelectListItem { Value = c.ID.ToString(), Text = c.Name })
+         .ToList();
+
+            var villes = _context.ResourceCities
+                .Select(v => new SelectListItem { Value = v.ID.ToString(), Text = v.Name })
+                .ToList();
+
+            var query = _context.Resources
+                .Include(r => r.ResourceCity)
+                .Include(r => r.ResourceBusinessHours)
+                .Include(r => r.Resources_ResourceCategories)
+                    .ThenInclude(rc => rc.ResourceCategory)
+                .AsQueryable();
+
+            if (SelectedCategorieId.HasValue)
+            {
+                query = query.Where(r => r.Resources_ResourceCategories
+                    .Any(rc => rc.IdResourceCategory == SelectedCategorieId));
+            }
+
+            if (SelectedCityId.HasValue)
+                query = query.Where(r => r.IdResourceCity == SelectedCityId);
+
+            if (!string.IsNullOrEmpty(SelectedBus))
+                query = query.Where(r => r.BusNearBy.Contains(SelectedBus));
+
+            var model = new ResourceSearchViewModel
+            {
+                Categories = categories,
+                Cities = villes,
+                SelectedCategorieId = SelectedCategorieId,
+                SelectedCityId = SelectedCityId,
+                SelectedBus = SelectedBus,
+                Resultats = query.ToList()
+            };
+
+            try
+            {
+                model.Resultats = await query.ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                throw;
+            }
+
+            return View(model);
+
         }
+
 
         // GET: Resources/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
 
-            var resources = await _context.Resources
+            var query = _context.Resources
                 .Include(r => r.ResourceCity)
-                .FirstOrDefaultAsync(m => m.ID == id);
-            if (resources == null)
+                .Include(r => r.ResourceBusinessHours)
+                .Include(r => r.Resources_ResourceCategories)
+                    .ThenInclude(rc => rc.ResourceCategory)
+                .FirstOrDefaultAsync(r => r.ID == id);
+
+           
+            if (query == null)
             {
                 return NotFound();
             }
-
-            return View(resources);
+            var model = new ResourceDetailsViewModel
+            {
+                Id = query.Result.ID,
+                Name = query.Result.Name,
+                PhoneNumber = query.Result.PhoneNumber,
+                Adresse = query.Result.Adresse,
+                Ville = query.Result.ResourceCity?.Name ?? "Non spécifié",
+                Categories = query.Result.Resources_ResourceCategories.Select(rc => rc.ResourceCategory.Name).ToList(),
+                BusNearBy = string.IsNullOrEmpty(query.Result.BusNearBy) ? new List<string>() : query.Result.BusNearBy.Split(',').ToList(),
+                businessHours = query.Result.ResourceBusinessHours.ToList()
+            };
+            
+            return View(model);
         }
 
         // GET: Resources/Create
         public IActionResult Create()
         {
-            ViewData["IdResourceCity"] = new SelectList(_context.ResourceCities, "ID", "Name");
-            return View();
+            var model = new ResourceCreateViewModel
+            {
+                Cities = _context.ResourceCities.Select(c => new SelectListItem { Value = c.ID.ToString(), Text = c.Name }).ToList(),
+                Categories = _context.ResourceCategories.Select(c => new SelectListItem { Value = c.ID.ToString(), Text = c.Name }).ToList()
+            };
+
+            return View(model);
         }
 
         // POST: Resources/Create
@@ -57,33 +125,123 @@ namespace WebApplication_SRPFIQ.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,Name,PhoneNumber,IdResourceCity,Adresse,BusNearBy")] Resources resources)
+        public async Task<IActionResult> Create(ResourceCreateViewModel model)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                _context.Add(resources);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                // Recharger les listes
+                model.Cities = _context.ResourceCities
+                    .Select(c => new SelectListItem { Value = c.ID.ToString(), Text = c.Name })
+                    .ToList();
+
+                model.Categories = _context.ResourceCategories
+                    .Select(c => new SelectListItem { Value = c.ID.ToString(), Text = c.Name })
+                    .ToList();
+
+                return View(model);
             }
-            ViewData["IdResourceCity"] = new SelectList(_context.ResourceCities, "ID", "Name", resources.IdResourceCity);
-            return View(resources);
+
+            try
+            {
+                // Création de la ressource principale
+                var ressource = new Resources
+                {
+                    Name = model.Nom,
+                    PhoneNumber = model.PhoneNumber,
+                    Adresse = model.Adresse,
+                    IdResourceCity = model.SelectedCityId,
+                    BusNearBy = string.Join(",", model.BusList),
+                    Resources_ResourceCategories = new List<Resources_ResourceCategories>(),
+                    ResourceBusinessHours = new List<ResourceBusinessHours>()
+                };
+
+                // Lien vers les catégories sélectionnées
+                foreach (var catId in model.SelectedCategoryIds.Distinct())
+                {
+                    ressource.Resources_ResourceCategories.Add(new Resources_ResourceCategories
+                    {
+                        IdResourceCategory = catId
+                    });
+                }
+
+                // Horaire : chaque ligne peut avoir plusieurs jours → une ligne par jour
+                foreach (var horaire in model.BusinessHours)
+                {
+                    foreach (var jour in horaire.Days)
+                    {
+                        Console.WriteLine($"Jour: {jour}, Ouverture: {horaire.Opening}, Fermeture: {horaire.Closing}");
+                        ressource.ResourceBusinessHours.Add(new ResourceBusinessHours
+                        {
+                            DayOfWeek = (DaysOfWeek)jour,
+                            OpeningTime = horaire.Opening,
+                            ClosingTime = horaire.Closing
+                        });
+                    }
+                }
+
+                // Sauvegarde
+                _context.Resources.Add(ressource);
+                await _context.SaveChangesAsync();
+
+                TempData["SuccessMessage"] = "Ressource créée avec succès.";
+                return RedirectToAction("Index");
+            }
+            catch (Exception ex)
+            {
+                // Log (si nécessaire) + message d'erreur utilisateur
+                ModelState.AddModelError("", "Une erreur s’est produite lors de la création de la ressource : " + ex.Message);
+
+                // Recharger les listes
+                model.Cities = _context.ResourceCities
+                    .Select(c => new SelectListItem { Value = c.ID.ToString(), Text = c.Name })
+                    .ToList();
+
+                model.Categories = _context.ResourceCategories
+                    .Select(c => new SelectListItem { Value = c.ID.ToString(), Text = c.Name })
+                    .ToList();
+
+                return View(model);
+            }
         }
 
         // GET: Resources/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            var resource = await _context.Resources
+         .Include(r => r.ResourceCity)
+         .Include(r => r.Resources_ResourceCategories)
+         .Include(r => r.ResourceBusinessHours)
+         .FirstOrDefaultAsync(r => r.ID == id);
 
-            var resources = await _context.Resources.FindAsync(id);
-            if (resources == null)
+            if (resource == null) return NotFound();
+
+            var model = new ResourceCreateViewModel
             {
-                return NotFound();
-            }
-            ViewData["IdResourceCity"] = new SelectList(_context.ResourceCities, "ID", "Name", resources.IdResourceCity);
-            return View(resources);
+                Nom = resource.Name,
+                PhoneNumber = resource.PhoneNumber,
+                Adresse = resource.Adresse,
+                SelectedCityId = resource.IdResourceCity,
+                SelectedCategoryIds = resource.Resources_ResourceCategories.Select(rc => rc.IdResourceCategory).ToList(),
+                BusList = resource.BusNearBy?.Split(",").ToList() ?? new List<string>(),
+                BusinessHours = resource.ResourceBusinessHours
+                    .Select(bh => new BusinessHourInput
+                    {
+                        Opening = bh.OpeningTime,
+                        Closing = bh.ClosingTime,
+                        //Days = bh.DayOfWeek
+                    })
+                    .ToList(),
+
+                Cities = await _context.ResourceCities
+                    .Select(c => new SelectListItem { Value = c.ID.ToString(), Text = c.Name })
+                    .ToListAsync(),
+
+                Categories = await _context.ResourceCategories
+                    .Select(c => new SelectListItem { Value = c.ID.ToString(), Text = c.Name })
+                    .ToListAsync()
+            };
+
+            return View(model); 
         }
 
         // POST: Resources/Edit/5
@@ -91,35 +249,64 @@ namespace WebApplication_SRPFIQ.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,Name,PhoneNumber,IdResourceCity,Adresse,BusNearBy")] Resources resources)
+        public async Task<IActionResult> Edit(int id, ResourceCreateViewModel model)
         {
-            if (id != resources.ID)
+            if (!ModelState.IsValid)
             {
-                return NotFound();
+                // Recharger les listes déroulantes
+                model.Cities = await _context.ResourceCities
+                    .Select(c => new SelectListItem { Value = c.ID.ToString(), Text = c.Name })
+                    .ToListAsync();
+
+                model.Categories = await _context.ResourceCategories
+                    .Select(c => new SelectListItem { Value = c.ID.ToString(), Text = c.Name })
+                    .ToListAsync();
+
+                return View(model);
             }
 
-            if (ModelState.IsValid)
+            var resource = await _context.Resources
+                .Include(r => r.Resources_ResourceCategories)
+                .Include(r => r.ResourceBusinessHours)
+                .FirstOrDefaultAsync(r => r.ID == id);
+
+            if (resource == null) return NotFound();
+
+            // Mise à jour des champs
+            resource.Name = model.Nom;
+            resource.PhoneNumber = model.PhoneNumber;
+            resource.Adresse = model.Adresse;
+            resource.IdResourceCity = model.SelectedCityId;
+            resource.BusNearBy = string.Join(",", model.BusList);
+
+            // Mise à jour des catégories
+            _context.Resources_ResourceCategories.RemoveRange(resource.Resources_ResourceCategories);
+            foreach (var catId in model.SelectedCategoryIds)
             {
-                try
+                _context.Resources_ResourceCategories.Add(new Resources_ResourceCategories
                 {
-                    _context.Update(resources);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!ResourcesExists(resources.ID))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
+                    IdResource = id,
+                    IdResourceCategory = catId
+                });
             }
-            ViewData["IdResourceCity"] = new SelectList(_context.ResourceCities, "ID", "Name", resources.IdResourceCity);
-            return View(resources);
+
+            // Mise à jour des horaires
+            _context.ResourceBusinessHours.RemoveRange(resource.ResourceBusinessHours);
+            foreach (var bh in model.BusinessHours)
+            {
+                _context.ResourceBusinessHours.Add(new ResourceBusinessHours
+                {
+                    IdResource = id,
+                    OpeningTime = bh.Opening,
+                    ClosingTime = bh.Closing,
+                    //DayOfWeek = bh.Days
+                });
+            }
+
+            await _context.SaveChangesAsync();
+
+            TempData["SuccessMessage"] = "Ressource modifiée avec succès.";
+            return RedirectToAction("Index");
         }
 
         // GET: Resources/Delete/5
