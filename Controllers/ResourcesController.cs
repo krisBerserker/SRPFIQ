@@ -4,6 +4,7 @@ using System.Configuration;
 using System.Linq;
 using System.Threading.Tasks;
 using Elfie.Serialization;
+using Humanizer.Localisation;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -144,7 +145,7 @@ namespace WebApplication_SRPFIQ.Controllers
             try
             {
                 // Création de la ressource principale
-                var ressource = new Resources
+                var ressource = new Models.Resources
                 {
                     Name = model.Nom,
                     PhoneNumber = model.PhoneNumber,
@@ -228,7 +229,8 @@ namespace WebApplication_SRPFIQ.Controllers
                     {
                         Opening = bh.OpeningTime,
                         Closing = bh.ClosingTime,
-                        //Days = bh.DayOfWeek
+                        Days = new List<int> { (int)bh.DayOfWeek }
+
                     })
                     .ToList(),
 
@@ -292,16 +294,21 @@ namespace WebApplication_SRPFIQ.Controllers
 
             // Mise à jour des horaires
             _context.ResourceBusinessHours.RemoveRange(resource.ResourceBusinessHours);
-            foreach (var bh in model.BusinessHours)
+            foreach (var horaire in model.BusinessHours)
             {
-                _context.ResourceBusinessHours.Add(new ResourceBusinessHours
+                foreach (var day in horaire.Days)
                 {
-                    IdResource = id,
-                    OpeningTime = bh.Opening,
-                    ClosingTime = bh.Closing,
-                    //DayOfWeek = bh.Days
-                });
+                    _context.ResourceBusinessHours.Add(new ResourceBusinessHours
+                    {
+                        DayOfWeek = (DaysOfWeek)day, 
+                        OpeningTime = horaire.Opening,
+                        ClosingTime = horaire.Closing,
+                        IdResource = id,
+
+                    });
+                }
             }
+
 
             await _context.SaveChangesAsync();
 
