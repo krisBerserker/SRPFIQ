@@ -46,13 +46,55 @@
 }
 
 /* modal */
-.modal {
- 
-  z-index: 1050; /* Bootstrap default */
-}
+.modal,
 .modal-backdrop {
-  z-index: 1040; /* Assurez-vous que ce n’est pas plus haut que .modal */
+    position: fixed !important;
+    z-index: 1050; !important;
 }
+
+.modal.show {
+    display: block !important;
+}
+
+body.modal-open .container-fluid::before {
+    pointer-events: none !important;
+}
+
+.modal {
+    z-index: 1055; !important;/* Valeur par défaut Bootstrap */
+}
+
+/* Container modal-body en grid 2 colonnes */
+.modal-body {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* 2 colonnes égales */
+    gap: 1rem; /* espace entre les champs */
+}
+
+/* Chaque form-group prend une colonne */
+.modal-body .form-group {
+    margin-bottom: 1rem;
+}
+
+/* Pour les champs qui doivent prendre les 2 colonnes (si besoin) */
+.modal-body .form-group.full-width {
+    grid-column: 1 / -1; /* occupe toute la largeur */
+}
+
+/* Optionnel : labels au-dessus, input pleine largeur */
+.modal-body label {
+    display: block;
+    margin-bottom: 0.25rem;
+    font-weight: 600;
+}
+
+.modal-body input.form-control,
+.modal-body select.form-control {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+
 
 /* --- Tableaux --- */
 table.table {

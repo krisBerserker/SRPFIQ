@@ -1,96 +1,223 @@
 ﻿@model WebApplication_SRPFIQ.Models.Questionnaires
 
 @{
-    ViewData["Title"] = "Edit";
-    ViewBag.ModalModel = Model;
+    ViewData["Title"] = "Édition du questionnaire";
+    Layout = "_Layout";
 }
 
 <h1>Edit</h1>
 
 <h4>Questionnaires</h4>
 <hr />
-<div class="">
-    <div class="">
-        <form asp-action="Edit" class="styled-form">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="ID" />
-            <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
-            </div>
-            <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="Active" /> @Html.DisplayNameFor(model => model.Active)
-                </label>
-            </div>
-            <div class="form-group">
-                <label asp-for="CreatedDate" class="control-label"></label>
-                <input asp-for="CreatedDate" class="form-control" />
-                <span asp-validation-for="CreatedDate" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
-        </form>
 
-        @* liste des questions *@
-        <h4>Questions associées</h4>
-        <button type="button" class="btn btn-outline-primary btn-sm" data-toggle="modal" data-target="#addQuestionModal" data-questionnaire-id="@Model.ID">
-            <i class="fas fa-plus-circle"></i> Ajouter une question
-        </button>
+<form asp-action="Edit" class="styled-form" autocomplete="off">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <input type="hidden" asp-for="ID" />
 
-        @if (Model.Questions != null && Model.Questions.Any())
-        {
-            <div class="table-responsive">
-                <table class="table table-bordered table-striped table-sm">
-                    <thead>
-                        <tr>
-                            <th>Nom</th>
-                            <th>Titre</th>
-                            <th>Actif</th>
-                            <th>Ordre</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var q in Model.Questions)
-                        {
-                            <tr>
-                                <td>@q.Name</td>
-                                <td>@q.Title</td>
-                                <td>@q.Active</td>
-                                <td>@q.Order</td>
-                                <td>
-                                    <a asp-controller="QuestionnaireQuestions" asp-action="Edit" asp-route-id="@q.ID" title="Modifier">
-                                        <i class="fas fa-edit text-warning"></i>
-                                    </a>
-                                    <a asp-controller="QuestionnaireQuestions" asp-action="Details" asp-route-id="@q.ID" title="Détails" class="ml-2">
-                                        <i class="fas fa-info-circle text-success"></i>
-                                    </a>
-                                    <a asp-controller="QuestionnaireQuestions" asp-action="Delete" asp-route-id="@q.ID" title="Supprimer" class="ml-2">
-                                        <i class="fas fa-trash-alt text-danger"></i>
-                                    </a>
-                                </td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
-            </div>
-        }
-        else
-        {
-            <p class="text-muted">Aucune question associée pour l’instant.</p>
-        }
+    <div class="form-group">
+        <label asp-for="Name" class="control-label"></label>
+        <input asp-for="Name" class="form-control" type="text" />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+
+    <div class="form-group form-check">
+        <label class="form-check-label">
+            <input class="form-check-input" asp-for="Active" /> @Html.DisplayNameFor(model => model.Active)
+        </label>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="CreatedDate" class="control-label"></label>
+        <input asp-for="CreatedDate" class="form-control" type="date" />
+        <span asp-validation-for="CreatedDate" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <input type="submit" value="Save" class="btn btn-primary" />
+    </div>
+</form>
+
+<hr />
+<h4>Questions associées</h4>
+
+<!-- Bouton d'ouverture du modal -->
+<button type="button" class="btn btn-outline-primary btn-sm mb-3" data-toggle="modal" data-target="#addQuestionModal">
+    <i class="fas fa-plus-circle"></i> Ajouter une question
+</button>
+
+<!-- Modal d'ajout de question -->
+<div class="modal fade" id="addQuestionModal" tabindex="-1" role="dialog" aria-labelledby="addQuestionModalLabel" aria-hidden="true" data-backdrop="static">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <form asp-controller="QuestionnaireQuestions" asp-action="Create" method="post" autocomplete="off">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addQuestionModalLabel">Nouvelle Question</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Fermer">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+
+                <div class="modal-body">
+                    <input type="hidden" name="IdQuestionnaire" value="@Model.ID" />
+
+                    <div class="form-group">
+                        <label>Ordre</label>
+                        <input name="Order" class="form-control" type="number" />
+                    </div>
+                    <div class="form-group">
+                        <label>Nom</label>
+                        <input name="Name" class="form-control" type="text" />
+                    </div>
+@*                     <div class="form-check mb-2" >
+                        <input class="form-check-input" type="checkbox" name="Active" checked />
+                        <label class="form-check-label">Actif</label>
+                    </div> *@
+                    <div class="form-group">
+                        <label>Titre</label>
+                        <input name="Title" class="form-control" type="text" />
+                    </div>
+                    <div class="form-group">
+                        <label>Titre court</label>
+                        <input name="ShortTitle" class="form-control" type="text" />
+                    </div>
+                    <div class="form-group">
+                        <label>Instructions</label>
+                        <input name="Instructions" class="form-control" type="text" />
+                    </div>
+
+                    <div class="form-group">
+                        <label>ID Type de donnée principale</label>
+                        <select id="IdMainDataType" name="IdMainDataType" class="form-control" asp-items="ViewBag.MainDataTypes">
+                            <option value="">-- Sélectionner --</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>ID Source Principale</label>
+                        <select id="IdMainDataSource" name="IdMainDataSource" class="form-control" asp-items="ViewBag.DataSources">
+                            <option value="">-- Sélectionner --</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group" id="subDataTypeGroup" style="display:none;">
+                        <label>ID Type de donnée secondaire</label>
+                        <select id="IdSubDataType" name="IdSubDataType" class="form-control" asp-items="ViewBag.SubDataTypes">
+                            <option value="">-- Sélectionner --</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group" id="subDataSourceGroup" style="display:none;">
+                        <label>ID Source secondaire</label>
+                        <select id="IdSubDataSource" name="IdSubDataSource" class="form-control" asp-items="ViewBag.DataSources">
+                            <option value="">-- Sélectionner --</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+                    <button type="submit" class="btn btn-primary">Créer</button>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
 
+@if (Model.Questions != null && Model.Questions.Any())
+{
+    <div class="table-responsive">
+        <table class="table table-bordered table-striped table-sm">
+            <thead>
+                <tr>
+                    <th>Order</th>
+                    <th>Nom</th>
+                    <th>Titre</th>
+                    <th>Actif</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var q in Model.Questions)
+                {
+                    <tr>
+                        <td>@q.Order</td>
+                        <td>@q.Name</td>
+                        <td>@q.Title</td>
+                        <td>@q.Active</td>
+                        <td>
+                            <a asp-controller="QuestionnaireQuestions" asp-action="Edit" asp-route-id="@q.ID" title="Modifier">
+                                <i class="fas fa-edit text-warning"></i>
+                            </a>
+                            <a asp-controller="QuestionnaireQuestions" asp-action="Details" asp-route-id="@q.ID" title="Détails" class="ml-2">
+                                <i class="fas fa-info-circle text-success"></i>
+                            </a>
+                            <a asp-controller="QuestionnaireQuestions" asp-action="Delete" asp-route-id="@q.ID" title="Supprimer" class="ml-2">
+                                <i class="fas fa-trash-alt text-danger"></i>
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+else
+{
+    <p class="text-muted">Aucune question associée pour l’instant.</p>
+}
+
 <div>
-    <a asp-action="Index" class="btn-link">Back to List</a>
+    <a asp-action="Index" class="btn btn-link">Retour à la liste</a>
 </div>
 
 @section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+
+    <script>
+        $(document).ready(function () {
+
+            function updateFields() {
+                var mainType = $('#IdMainDataType').val();
+                var subType = $('#IdSubDataType').val();
+
+                // Gestion IdMainDataSource
+                if (mainType === "1" || mainType === "7") {
+                    // Désactiver et vider
+                    $('#IdMainDataSource').val('').prop('disabled', true);
+                } else {
+                    $('#IdMainDataSource').prop('disabled', false);
+                }
+
+                // Gestion IdSubDataType
+                if (mainType === "6") {
+                    $('#subDataTypeGroup').show();
+                } else {
+                    $('#subDataTypeGroup').hide();
+                    $('#IdSubDataType').val('');
+                }
+
+                // Gestion IdSubDataSource
+                if (subType === "2" || subType === "3") {
+                    $('#subDataSourceGroup').show();
+                    $('#IdSubDataSource').prop('disabled', false);
+                } else {
+                    $('#subDataSourceGroup').hide();
+                    $('#IdSubDataSource').val('').prop('disabled', true);
+                }
+            }
+
+            // Appel initial
+            updateFields();
+
+            // Déclencheur sur changement de IdMainDataType
+            $('#IdMainDataType').change(function () {
+                updateFields();
+            });
+
+            // Déclencheur sur changement de IdSubDataType
+            $('#IdSubDataType').change(function () {
+                updateFields();
+            });
+        });
+    </script>
 }

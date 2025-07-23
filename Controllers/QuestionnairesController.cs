@@ -28,17 +28,12 @@ namespace WebApplication_SRPFIQ.Controllers
         // GET: Questionnaires/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
             var questionnaires = await _context.Questionnaires
                 .FirstOrDefaultAsync(m => m.ID == id);
-            if (questionnaires == null)
-            {
-                return NotFound();
-            }
+
+            if (questionnaires == null) return NotFound();
 
             return View(questionnaires);
         }
@@ -47,12 +42,9 @@ namespace WebApplication_SRPFIQ.Controllers
         public IActionResult Create()
         {
             return View();
-
         }
 
         // POST: Questionnaires/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("ID,Name,Active,CreatedDate")] Questionnaires questionnaires)
@@ -69,29 +61,42 @@ namespace WebApplication_SRPFIQ.Controllers
         // GET: Questionnaires/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
             var questionnaires = await _context.Questionnaires
-             .Include(q => q.Questions)
-             .FirstOrDefaultAsync(q => q.ID == id);
+                .Include(q => q.Questions)
+                .FirstOrDefaultAsync(q => q.ID == id);
 
+            if (questionnaires == null) return NotFound();
 
-            if (questionnaires == null)
+            // Injecter les ViewBag nécessaires pour le modal
+            ViewBag.MainDataTypes = new List<SelectListItem>
             {
-                return NotFound();
-            }
+                new SelectListItem { Value = "1", Text = "Champ texte" },
+                new SelectListItem { Value = "2", Text = "Radio Bouton" },
+                new SelectListItem { Value = "3", Text = "Case à cocher" },
+                new SelectListItem { Value = "4", Text = "Liste déroulante" },
+                new SelectListItem { Value = "5", Text = "Liste déroulante multiple" },
+                new SelectListItem { Value = "6", Text = "Tableau composé" },
+                new SelectListItem { Value = "7", Text = "Champ texte multiple" }
+            };
+
+            ViewBag.SubDataTypes = new List<SelectListItem>
+            {
+                new SelectListItem { Value = "2", Text = "Radio Bouton" },
+                new SelectListItem { Value = "3", Text = "Case à cocher" }
+            };
+
+            var dataSources = _context.QuestionnaireDataSources
+                .Select(ds => new { ds.ID, ds.Name })
+                .ToList();
+
+            ViewBag.DataSources = new SelectList(dataSources, "ID", "Name");
+
             return View(questionnaires);
         }
 
-
-       
-
         // POST: Questionnaires/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("ID,Name,Active,CreatedDate")] Questionnaires questionnaires)
@@ -119,21 +124,18 @@ namespace WebApplication_SRPFIQ.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Edit", new { id = questionnaires.ID });
             }
-            return View(questionnaires);
-        }
 
+            return RedirectToAction("Edit", new { id = questionnaires.ID });
+        }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ToggleActive(int id)
         {
             var questionnaire = await _context.Questionnaires.FindAsync(id);
-            if (questionnaire == null)
-            {
-                return NotFound();
-            }
+            if (questionnaire == null) return NotFound();
 
             questionnaire.Active = !questionnaire.Active;
             _context.Update(questionnaire);
@@ -142,22 +144,15 @@ namespace WebApplication_SRPFIQ.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-
-
         // GET: Questionnaires/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
             var questionnaires = await _context.Questionnaires
                 .FirstOrDefaultAsync(m => m.ID == id);
-            if (questionnaires == null)
-            {
-                return NotFound();
-            }
+
+            if (questionnaires == null) return NotFound();
 
             return View(questionnaires);
         }

@@ -11,6 +11,8 @@
     <!-- Custom fonts for this template-->
     <link href="~/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css?family=Nunito:200,300,400,600,700,800,900" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
 
     <!-- Custom styles for this template-->
     <link href="~/css/sb-admin-2.min.css" rel="stylesheet" />
@@ -36,8 +38,8 @@
                 </div>
 
             </div>
+@* 
 
-            <!-- 🔻 Modal (hors container-fluid) -->
             @{
                 var modalModel = ViewBag.ModalModel as WebApplication_SRPFIQ.Models.Questionnaires;
             }
@@ -45,7 +47,7 @@
             {
                 @Html.Partial("~/Views/QuestionnaireQuestions/ModalQuestions.cshtml", modalModel)
             }
-
+ *@
             <!-- Footer -->
             <footer class="sticky-footer bg-white">
                 <div class="container my-auto">
@@ -56,6 +58,8 @@
             </footer>
         </div>
     </div>
+
+
 
     <!-- Scripts -->
     <script src="~/vendor/jquery/jquery.min.js"></script>
