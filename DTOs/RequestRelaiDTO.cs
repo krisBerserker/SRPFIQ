@@ -17,5 +17,20 @@ namespace WebApplication_SRPFIQ.DTOs
         public string? Evaluation { get; set; }
         [DisplayName("Vécu maternel")]
         public string? VecuMaternel { get; set; }
+        [DisplayName("Téléphone")]
+        public string? PhoneNumber { get; set; }
+        [DisplayName("Couverture santé")]
+        public string? MedicalCoverage { get; set; }
+        [DisplayName("Adresse")]
+        public string? Adresse { get; set; }
+        public bool IsMonoparental { get; set; }
+        [DisplayName("Nb grossesse")]
+        public string? NbPregnancy { get; set; }
+        [DisplayName("Statut")]
+        public string? Statut { get; set; }
+        [DisplayName("Langue parlée")]
+        public string? SpokenLanguage { get; set; }
+        [DisplayName("Statut d'immigration")]
+        public string? ImmigrationStatus { get; set; }
     }
 }

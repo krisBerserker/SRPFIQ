@@ -56,22 +56,21 @@ public class AccountController : Controller
         {
             new Claim(ClaimTypes.NameIdentifier, user.ID.ToString()),
             new Claim(ClaimTypes.Email, user.UserName),
-            new Claim(ClaimTypes.Name, user.UserName)
+            new Claim(ClaimTypes.Name, user.FirstName)
         };
 
         if (!string.IsNullOrEmpty(role))
         {
             claims.Add(new Claim(ClaimTypes.Role, role));
         }
-        //Récupérer l'id de l'utilisateur connecté
-        //string userId = user.FindFirstValue(ClaimTypes.NameIdentifier);
+       
 
         // Authentification via cookie
         var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
         var principal = new ClaimsPrincipal(identity);
 
         await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
-        if (role == "Maman-Relais")
+        if (role == "Maman-Relais" || role == "Doulas")
         {
             return RedirectToAction("Index", "Requests", new {user.ID});
         }
@@ -88,4 +87,7 @@ public class AccountController : Controller
         await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
         return RedirectToAction("Login", "Account");
     }
+
+    //Récupérer l'id de l'utilisateur connecté
+    //string userId = user.FindFirstValue(ClaimTypes.NameIdentifier);
 }

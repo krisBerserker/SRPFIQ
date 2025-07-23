@@ -1,13 +1,16 @@
-﻿@model WebApplication_SRPFIQ.Models.Requests
+﻿@model WebApplication_SRPFIQ.ViewModels.RequestMettingViewModel
+
 
 @{
     ViewData["Title"] = "Details";
+    bool doula = (Model.UserDTO.Role == "Doulas" ? true : false);
 }
 
 <h1>Details</h1>
 
 <div>
-    <h4>Demande @Html.DisplayFor(m=> m.ID)</h4>
+    <h4>Demande @Html.DisplayFor(m=> m.RequestRelaiDTO.ID)</h4>
+    <a asp-action="">notes</a>
     <hr />
     <dl class="row">
      @*    <dt class = "col-sm-2">
@@ -17,16 +20,64 @@
             @Html.DisplayFor(model => model.FolioNumber)
         </dd> *@
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.FullName)
+            @Html.DisplayNameFor(model => model.RequestRelaiDTO.NameMother)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.FullName)
+            @Html.DisplayFor(model => model.RequestRelaiDTO.NameMother)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.RequestRelaiDTO.DPA)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.RequestRelaiDTO.DPA)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.RequestRelaiDTO.PhoneNumber)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.RequestRelaiDTO.PhoneNumber)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.MedicalCoverage)
+            @Html.DisplayNameFor(model => model.RequestRelaiDTO.MedicalCoverage)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.MedicalCoverage)
+            @Html.DisplayFor(model => model.RequestRelaiDTO.MedicalCoverage)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.RequestRelaiDTO.Adresse)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.RequestRelaiDTO.Adresse)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.RequestRelaiDTO.IsMonoparental)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.RequestRelaiDTO.IsMonoparental)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.RequestRelaiDTO.NbPregnancy)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.RequestRelaiDTO.NbPregnancy)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.RequestRelaiDTO.Statut)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.RequestRelaiDTO.Statut)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.RequestRelaiDTO.SpokenLanguage)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.RequestRelaiDTO.SpokenLanguage)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.RequestRelaiDTO.ImmigrationStatus)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.RequestRelaiDTO.ImmigrationStatus)
         </dd>
        @*  <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.ReceivedRequestAt)
@@ -34,61 +85,30 @@
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.ReceivedRequestAt)
         </dd> *@
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.PhoneNumber)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.PhoneNumber)
-        </dd>
+      
       @*   <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.Email)
         </dt>
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.Email)
         </dd> *@
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Adresse)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Adresse)
-        </dd>
+     
        @*  <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.ZipCode)
         </dt>
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.ZipCode)
         </dd> *@
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.EstimatedDeliveryDate)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.EstimatedDeliveryDate)
-        </dd>
+     
       @*   <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.NbPregnancy)
         </dt>
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.NbPregnancy)
         </dd> *@
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.IsMonoparental)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.IsMonoparental)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.SpokenLanguage)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.SpokenLanguage)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ImmigrationStatus)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ImmigrationStatus)
-        </dd>
-        <dt class = "col-sm-2">
+     
+        
+        @* <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.NbChilds)
         </dt>
         <dd class = "col-sm-10">
@@ -117,16 +137,173 @@
         </dt>
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.LastModifiedDate)
-        </dd>
-        <dt class = "col-sm-2">
+        </dd> *@
+       @*  <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.UserClosedBy)
         </dt>
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.UserClosedBy.FirstName)
-        </dd>
+        </dd> *@
     </dl>
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model?.ID">Edit</a> |
-    <a asp-action="Index" asp-route-id="@Model?.ID">Back to List</a>
+    <h2>Suivis</h2>
+
+
+    <p>
+        <div class="text-end">
+            <a asp-action="Create" asp-route-id="@Model?.RequestRelaiDTO.ID" asp-controller="Meetings">Ajouter un suivi</a>
+        </div>
+    </p>
+    <table class="table">
+        <thead>
+            <tr>
+                   <th>
+                ID
+                </th>
+                <th>
+                    Suivi
+                </th>
+                <th>
+                    Date du suivi
+                </th>
+             
+                <th>
+                    Type de suivi
+                </th>
+
+                <th>
+                    Durée(min) / nombre(texto)
+                </th>
+
+                <th>
+                    Fait par
+                </th>
+                <th>
+                    
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Meetings)
+            {
+                <tr>
+                     <td>
+                @Html.DisplayFor(modelItem => item.ID)
+                </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.MeetingNumber)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.EventDate)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.IdMeetingType)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Amount)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.IdUser)
+                    </td>
+                    <td>
+                        <a asp-action="Details" asp-route-id="@item.ID" asp-controller="Meetings">Consulter</a> 
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+</div>
+
+@if (doula)
+{
+    <div>
+        <h2>Interventions médicales</h2>
+
+
+        <p>
+            <div class="text-end">
+                <a asp-action="Create" asp-route-id="@Model?.RequestRelaiDTO.ID" asp-controller="MedicalNotes">Ajouter une intervention</a>
+            </div>
+        </p>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>
+                        ID
+                    </th>
+                    <th>
+                        Intervention
+                    </th>
+                    <th>
+                        Date
+                    </th>
+
+                    <th>
+                        Heure
+                    </th>
+
+                    <th>
+                       Description
+                    </th>
+
+                    <th>
+                        Fait par
+                    </th>
+                    <th>
+
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.MedicalNotes)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.ID)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Intervention)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Date)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Heure)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Description)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.UserName)
+                        </td>
+                        <td>
+                            <a asp-action="Details" asp-route-id="@item.ID" asp-controller="MedicalNotes">Consulter</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+    </div>
+}
+
+@if (!doula)
+{
+    <div>
+        <h2>Évaluation d'autonomie (@Model.RequestRelaiDTO.Evaluation) <a asp-action="Create" asp-controller="Questionnaires"><i class="fa fa-file-alt"></i></a></h2>
+        <p>Dernière mise à jour le : @Model.QuestionnaireAnswersDTO.LastModifiedDate</p>
+    </div>
+}
+
+
+
+<div>
+    <h2>Vécu maternel (@Model.RequestRelaiDTO.Evaluation) <a asp-action="Create" asp-controller="MaternalExperiences"><i class="fa fa-file-alt"></i></a></h2>
+    <p>Dernière mise à jour le : @Model.MaternalExperiencesDTO.LastModifiedDate</p>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model?.RequestRelaiDTO.ID">Edit</a> |
+    <a asp-action="Index" asp-route-id="@Model?.UserDTO.ID">Back to List</a>
 </div>

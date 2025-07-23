@@ -1,8 +1,10 @@
 ﻿@* @model IEnumerable<WebApplication_SRPFIQ.Models.Requests> *@
-@model IEnumerable<WebApplication_SRPFIQ.DTOs.RequestRelaiDTO>
+@model WebApplication_SRPFIQ.ViewModels.RequestUserViewModel
 
 @{
     ViewData["Title"] = "Index";
+    bool doula = (Model.UserDTO.Role == "Doulas" ? true : false);
+    //string title = (lectureSeule ? $"Suivi {Model.Numero}" : "Ajout d'une note de suivi");
 }
 
 <h1>Mes demandes</h1>
@@ -20,78 +22,33 @@
                 @Html.DisplayNameFor(model => model.ID)
             </th> *@
             <th>
-                @Html.DisplayNameFor(model => model.NumberFolio)
+                Demande
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.NameMother)
-            </th>
-          @*   <th>
-                @Html.DisplayNameFor(model => model.MedicalCoverage)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ReceivedRequestAt)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.PhoneNumber)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Email)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Adresse)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ZipCode)
-            </th> *@
-            <th>
-                @Html.DisplayNameFor(model => model.DPA)
+                 Nom de la maman
             </th>
 
             <th>
-                @Html.DisplayNameFor(model=> model.DateDernierSuivi)
+                 DPA
+            </th>
+
+            <th hidden="@(!doula ? null :"hidden")">
+                 Date dernier suivi
             </th>
 
             <th>
-                @Html.DisplayNameFor(model => model.Evaluation)
+                 Évaluation
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.VecuMaternel)
-            </th>
-           @*  <th>
-                @Html.DisplayNameFor(model => model.NbPregnancy)
+                 Vécu marternel
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.IsMonoparental)
+                
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.SpokenLanguage)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ImmigrationStatus)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.NbChilds)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ChildsAge)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ClosedDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CreatedDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.LastModifiedDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.UserClosedBy)
-            </th>
-            <th></th> *@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
+@foreach (var item in Model.RequestRelaiDTO) {
         <tr>
                @*  <td>
                     @Html.DisplayFor(modelItem => item.ID)
@@ -103,28 +60,10 @@
                 @Html.DisplayFor(modelItem => item.NameMother)
             </td>
              
-           @*  <td>
-                @Html.DisplayFor(modelItem => item.MedicalCoverage)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ReceivedRequestAt)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.PhoneNumber)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Email)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Adresse)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ZipCode)
-            </td> *@
             <td>
                 @Html.DisplayFor(modelItem => item.DPA)
             </td>
-                <td>
+                <td hidden="@(!doula ? null :"hidden")">
                     @Html.DisplayFor(modelItem => item.DateDernierSuivi)
                 </td>
                 <td>
@@ -134,39 +73,10 @@
                     @Html.DisplayFor(modelItem => item.VecuMaternel)
                 </td>
                
-            @* <td>
-                @Html.DisplayFor(modelItem => item.NbPregnancy)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IsMonoparental)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.SpokenLanguage)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ImmigrationStatus)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.NbChilds)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ChildsAge)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ClosedDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CreatedDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.LastModifiedDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.UserClosedBy.FirstName)
-            </td> *@
             <td>
                 <a asp-action="Details" asp-route-id="@item.ID">Consulter</a> |
-                <a asp-action="Delete" asp-route-id="@item.ID">Ajouter un suivi</a>
+                    <a asp-action="Create" asp-route-id="@item.ID" asp-controller="Meetings" hidden="@(!doula ? null :"hidden")">Ajouter un suivi</a>
+                    <a asp-action="Create" asp-controller="MedicalNotes" hidden="@(!doula ? "hidden" : null)">Ajouter une intervention médicale</a>
             </td>
         </tr>
 }
