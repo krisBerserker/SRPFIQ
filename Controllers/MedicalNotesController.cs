@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using NuGet.Configuration;
 using WebApplication_SRPFIQ.Data;
 using WebApplication_SRPFIQ.Models;
+using WebApplication_SRPFIQ.ViewModels;
 
 namespace WebApplication_SRPFIQ.Controllers
 {
@@ -43,15 +46,31 @@ namespace WebApplication_SRPFIQ.Controllers
                 return NotFound();
             }
 
-            return View(medicalNotes);
+            var model = new MedicalNotesViewModel
+            {
+                ID = medicalNotes.ID,
+                Date = medicalNotes.EventDate,
+                Heure = medicalNotes.EventDate.ToString("HH:mm"),
+                Intervention = medicalNotes.Description,
+                Notes = medicalNotes.Notes,
+                Mode = "Affichage"
+            };
+
+            return View(model);
         }
 
         // GET: MedicalNotes/Create
-        public IActionResult Create()
+        public IActionResult Create( int id)
         {
             ViewData["IdRequest"] = new SelectList(_context.Requests, "ID", "FolioNumber");
             ViewData["IdUser"] = new SelectList(_context.Users, "ID", "FirstName");
-            return View();
+            var model = new MedicalNotesViewModel
+            {
+                IDRequest = id,
+                Date = DateTime.Now,
+                Mode = "Ajout"
+            };
+            return View("Details", model);
         }
 
         // POST: MedicalNotes/Create
@@ -59,13 +78,25 @@ namespace WebApplication_SRPFIQ.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,IdRequest,IdUser,EventDate,Description,Notes,CreatedDate,LastModifiedDate")] MedicalNotes medicalNotes)
+        public async Task<IActionResult> Create(MedicalNotesViewModel medicalNotesViewModel)
         {
+            MedicalNotes medicalNotes = new MedicalNotes
+            {
+                ID = 0,
+                EventDate = medicalNotesViewModel.Date.Add(TimeSpan.Parse(medicalNotesViewModel.Heure)),
+                Description = medicalNotesViewModel.Intervention,
+                IdRequest = medicalNotesViewModel.IDRequest,
+                CreatedDate = DateTime.Now,
+                LastModifiedDate = DateTime.Now,
+                Notes = medicalNotesViewModel.Notes,
+                IdUser = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value),
+
+            };
             if (ModelState.IsValid)
             {
                 _context.Add(medicalNotes);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Details", "Requests", new {id = medicalNotesViewModel.IDRequest});
             }
             ViewData["IdRequest"] = new SelectList(_context.Requests, "ID", "FolioNumber", medicalNotes.IdRequest);
             ViewData["IdUser"] = new SelectList(_context.Users, "ID", "FirstName", medicalNotes.IdUser);

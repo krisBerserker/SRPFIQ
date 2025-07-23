@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using WebApplication_SRPFIQ.Data;
 
@@ -14,6 +15,15 @@ namespace WebApplication_SRPFIQ
 
             builder.Services.AddDbContext<SRPFIQDbContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("SRPFIQConnection")));
+
+            builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                    .AddCookie(options =>
+                    {
+                        options.LoginPath = "/Account/Login";
+                        options.LogoutPath = "/Account/Logout";
+                    });
+
+            builder.Services.AddAuthorization();
 
             var app = builder.Build();
 
@@ -36,12 +46,12 @@ namespace WebApplication_SRPFIQ
             app.UseStaticFiles();
 
             app.UseRouting();
-
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.MapControllerRoute(
                 name: "default",
-                pattern: "{controller=Home}/{action=Index}/{id?}");
+                pattern: "{controller=Account}/{action=Login}/{id?}");
 
             app.Run();
         }

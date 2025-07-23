@@ -20,10 +20,17 @@ namespace WebApplication_SRPFIQ.Controllers
         }
 
         // GET: UserAssignedRequests
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int id)
         {
-            var sRPFIQDbContext = _context.UserAssignedRequests.Include(u => u.Requests).Include(u => u.Users);
-            return View(await sRPFIQDbContext.ToListAsync());
+
+            var utilisateurConnecter = _context.Users.FirstOrDefault(u => u.ID == id);
+
+            if (_context.UserPermissions.Any(up => up.IdUser == utilisateurConnecter.ID && up.IdUserRole == 5))
+            {
+                var sRPFIQDbContext = _context.UserAssignedRequests.Include(u => u.Requests).Include(u => u.Users);
+                return View(await sRPFIQDbContext.ToListAsync());
+            }
+            return View();
         }
 
         // GET: UserAssignedRequests/Details/5

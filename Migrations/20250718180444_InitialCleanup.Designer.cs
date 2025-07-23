@@ -12,15 +12,15 @@ using WebApplication_SRPFIQ.Data;
 namespace WebApplication_SRPFIQ.Migrations
 {
     [DbContext(typeof(SRPFIQDbContext))]
-    [Migration("20250625181914_CorrectionRessourceCategories")]
-    partial class CorrectionRessourceCategories
+    [Migration("20250718180444_InitialCleanup")]
+    partial class InitialCleanup
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "9.0.6")
+                .HasAnnotation("ProductVersion", "9.0.7")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -755,7 +755,7 @@ namespace WebApplication_SRPFIQ.Migrations
 
                     b.HasIndex("IdResourceCategory");
 
-                    b.ToTable("Resources_ResourceCatégories", (string)null);
+                    b.ToTable("Resources_ResourceCategories", (string)null);
                 });
 
             modelBuilder.Entity("WebApplication_SRPFIQ.Models.UserAssignedRequests", b =>
@@ -1053,7 +1053,7 @@ namespace WebApplication_SRPFIQ.Migrations
             modelBuilder.Entity("WebApplication_SRPFIQ.Models.ResourceBusinessHours", b =>
                 {
                     b.HasOne("WebApplication_SRPFIQ.Models.Resources", "Resource")
-                        .WithMany()
+                        .WithMany("ResourceBusinessHours")
                         .HasForeignKey("IdResource")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1064,7 +1064,7 @@ namespace WebApplication_SRPFIQ.Migrations
             modelBuilder.Entity("WebApplication_SRPFIQ.Models.Resources", b =>
                 {
                     b.HasOne("WebApplication_SRPFIQ.Models.ResourceCities", "ResourceCity")
-                        .WithMany()
+                        .WithMany("Resources")
                         .HasForeignKey("IdResourceCity")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1179,8 +1179,15 @@ namespace WebApplication_SRPFIQ.Migrations
                     b.Navigation("Resources_ResourceCategories");
                 });
 
+            modelBuilder.Entity("WebApplication_SRPFIQ.Models.ResourceCities", b =>
+                {
+                    b.Navigation("Resources");
+                });
+
             modelBuilder.Entity("WebApplication_SRPFIQ.Models.Resources", b =>
                 {
+                    b.Navigation("ResourceBusinessHours");
+
                     b.Navigation("Resources_ResourceCategories");
                 });
 

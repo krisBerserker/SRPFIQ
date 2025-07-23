@@ -17,7 +17,7 @@ namespace WebApplication_SRPFIQ.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "9.0.6")
+                .HasAnnotation("ProductVersion", "9.0.7")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -752,7 +752,7 @@ namespace WebApplication_SRPFIQ.Migrations
 
                     b.HasIndex("IdResourceCategory");
 
-                    b.ToTable("Resources_ResourceCatégories", (string)null);
+                    b.ToTable("Resources_ResourceCategories", (string)null);
                 });
 
             modelBuilder.Entity("WebApplication_SRPFIQ.Models.UserAssignedRequests", b =>
@@ -1050,7 +1050,7 @@ namespace WebApplication_SRPFIQ.Migrations
             modelBuilder.Entity("WebApplication_SRPFIQ.Models.ResourceBusinessHours", b =>
                 {
                     b.HasOne("WebApplication_SRPFIQ.Models.Resources", "Resource")
-                        .WithMany()
+                        .WithMany("ResourceBusinessHours")
                         .HasForeignKey("IdResource")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1061,7 +1061,7 @@ namespace WebApplication_SRPFIQ.Migrations
             modelBuilder.Entity("WebApplication_SRPFIQ.Models.Resources", b =>
                 {
                     b.HasOne("WebApplication_SRPFIQ.Models.ResourceCities", "ResourceCity")
-                        .WithMany()
+                        .WithMany("Resources")
                         .HasForeignKey("IdResourceCity")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1176,8 +1176,15 @@ namespace WebApplication_SRPFIQ.Migrations
                     b.Navigation("Resources_ResourceCategories");
                 });
 
+            modelBuilder.Entity("WebApplication_SRPFIQ.Models.ResourceCities", b =>
+                {
+                    b.Navigation("Resources");
+                });
+
             modelBuilder.Entity("WebApplication_SRPFIQ.Models.Resources", b =>
                 {
+                    b.Navigation("ResourceBusinessHours");
+
                     b.Navigation("Resources_ResourceCategories");
                 });
 

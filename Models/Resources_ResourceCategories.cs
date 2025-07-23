@@ -12,6 +12,7 @@ namespace WebApplication_SRPFIQ.Models
 
         [ForeignKey(nameof(IdResourceCategory))]
         public ResourceCategories? ResourceCategory { get; set; }
+
         [ForeignKey(nameof(IdResource))]
         public Resources? Resource { get; set; }
     }
