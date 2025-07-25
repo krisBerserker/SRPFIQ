@@ -31,7 +31,7 @@
         </a>
         <div id="collapseDemandes" class="collapse" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
-                <a class="collapse-item" asp-controller="Requests" asp-action="Index">Liste Des Demandes</a>
+                <a class="collapse-item" asp-controller="Requests" asp-action="Index" asp-route-id="@User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value">Liste Des Demandes</a>
                 <a class="collapse-item" asp-controller="RequestNotes" asp-action="Index">Request Notes</a>
                 <a class="collapse-item" asp-controller="UserAssignedRequests" asp-action="Index">Assigner les demandes</a>
                 <a class="collapse-item" asp-controller="MedicalNotes" asp-action="Index">Medical Notes</a>

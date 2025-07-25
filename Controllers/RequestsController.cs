@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -13,6 +14,7 @@ using WebApplication_SRPFIQ.ViewModels;
 
 namespace WebApplication_SRPFIQ.Controllers
 {
+   
     public class RequestsController : Controller
     {
         private readonly SRPFIQDbContext _context;
@@ -22,7 +24,7 @@ namespace WebApplication_SRPFIQ.Controllers
         {
             _context = context;
         }
-
+        [Authorize]
         // GET: Requests
         public async Task<IActionResult> Index(int id)
         {

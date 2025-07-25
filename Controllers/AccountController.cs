@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
@@ -9,10 +10,11 @@ using WebApplication_SRPFIQ.Data;
 using WebApplication_SRPFIQ.Models;
 using WebApplication_SRPFIQ.Utils;
 
+[AllowAnonymous]
 public class AccountController : Controller
 {
     private readonly SRPFIQDbContext _context;
-
+    
     public AccountController(SRPFIQDbContext context)
     {
         _context = context;
@@ -70,13 +72,20 @@ public class AccountController : Controller
         var principal = new ClaimsPrincipal(identity);
 
         await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
+
+        bool isAuth = HttpContext.User.Identity.IsAuthenticated;
+        // Vérifie cette valeur en debug
+
+
+
         if (role == "Maman-Relais" || role == "Doulas")
         {
-            return RedirectToAction("Index", "Requests", new {user.ID});
+            //return RedirectToAction("Index", "Requests", new {user.ID});
+            return RedirectToAction("Index", "Home");
         }
         else
         {
-            return RedirectToAction("Index", "Requests");
+            return RedirectToAction("Login", "Account");
         }
         
     }
