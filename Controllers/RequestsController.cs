@@ -30,7 +30,7 @@ namespace WebApplication_SRPFIQ.Controllers
         {
             var utilisateurConnecter = _context.Users.FirstOrDefault(u => u.ID == id);
             
-            if (_context.UserPermissions.Any(up=> up.IdUser == utilisateurConnecter.ID && up.IdUserRole != 5))
+            if (_context.UserPermissions.Any(up=> up.IdUser == utilisateurConnecter.ID))
             {
                 List<UserAssignedRequests> listeDemande = _context.UserAssignedRequests.Where(uar=> uar.IdUser== utilisateurConnecter.ID).ToList();
                 List<Requests> userRequest = new List<Requests>();

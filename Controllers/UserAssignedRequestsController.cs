@@ -66,13 +66,13 @@ namespace WebApplication_SRPFIQ.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,IdRequest,IdUser")] UserAssignedRequests userAssignedRequests)
+        public async Task<IActionResult> Create([Bind("IdRequest,IdUser")] UserAssignedRequests userAssignedRequests)
         {
             if (ModelState.IsValid)
             {
                 _context.Add(userAssignedRequests);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Index", "Users");
             }
             ViewData["IdRequest"] = new SelectList(_context.Requests, "ID", "FolioNumber", userAssignedRequests.IdRequest);
             ViewData["IdUser"] = new SelectList(_context.Users, "ID", "FirstName", userAssignedRequests.IdUser);

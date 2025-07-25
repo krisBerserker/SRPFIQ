@@ -2,19 +2,19 @@
 
 @{
     ViewBag.Title = "Créer un compte";
-    Layout = Layout; // ou selon ton layout
+    Layout = null; // ou selon ton layout
 }
 
 <h2>Créer un compte</h2>
 
-@using (Html.BeginForm("Create", "Users", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+@using (Html.BeginForm("Register", "Account", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
 {
     @Html.AntiForgeryToken()
 
     <div class="form-group">
         @Html.LabelFor(m => m.FirstName, htmlAttributes: new { @class = "control-label col-md-2" })
         <div class="col-md-10">
-            @Html.TextBoxFor(m => m.FirstName, new { @class = "form-control" })
+            @Html.TextBoxFor(m => m.FirstName, new { @class = "form-control"})
             @Html.ValidationMessageFor(m => m.FirstName, "", new { @class = "text-danger" })
         </div>
     </div>
@@ -64,11 +64,3 @@
     </div>
 }
 
-
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
-
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}

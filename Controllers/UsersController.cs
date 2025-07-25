@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using WebApplication_SRPFIQ.Data;
 using WebApplication_SRPFIQ.Models;
+using WebApplication_SRPFIQ.ViewModels;
+using WebApplication_SRPFIQ.Utils;
 
 namespace WebApplication_SRPFIQ.Controllers
 {
@@ -46,7 +48,11 @@ namespace WebApplication_SRPFIQ.Controllers
         // GET: Users/Create
         public IActionResult Create()
         {
-            return View();
+            var model = new RegisterViewModel
+            {
+                Roles = GetAvailableRoles()
+            };
+            return View(model);
         }
 
         // POST: Users/Create
@@ -54,16 +60,48 @@ namespace WebApplication_SRPFIQ.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,FirstName,LastName,UserName,PasswordHash,LastLoginDate,MustChangePassword,Active")] Users users)
+        public async Task<IActionResult> Create(RegisterViewModel model)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(users);
+               var utils = new PasswordUtils();
+                Users users = new Users
+                {
+                    FirstName = model.FirstName,
+                    LastName = model.LastName,
+                    UserName = model.Email,
+                    PasswordHash = utils.ComputeSha256Hash(model.Password),
+                    Active = true,
+                };
+                _context.Users.Add(users);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+
+                // 2. Récupérer le rôle sélectionné (par nom ou ID)
+                var role = _context.UserRoles.FirstOrDefault(r => r.ID == model.SelectedRole);
+                if (role == null)
+                {
+                    ModelState.AddModelError("SelectedRole", "Rôle invalide.");
+                    model.Roles = GetAvailableRoles();
+                    return View(model);
+                }
+
+                // 3. Ajouter l’entrée dans UserPermissions
+                var permission = new UserPermissions
+                {
+                    IdUser = users.ID,
+                    IdUserRole = role.ID,
+                };
+
+                _context.UserPermissions.Add(permission);
+                await _context.SaveChangesAsync();
+
+                return RedirectToAction("Index", "Users");
             }
-            return View(users);
+            model.Roles = GetAvailableRoles();
+            return View(model);
         }
+
+        [HttpPost]
 
         // GET: Users/Edit/5
         public async Task<IActionResult> Edit(int? id)
@@ -152,6 +190,20 @@ namespace WebApplication_SRPFIQ.Controllers
         private bool UsersExists(int id)
         {
             return _context.Users.Any(e => e.ID == id);
+        }
+
+
+        private List<SelectListItem> GetAvailableRoles()
+        {
+
+            return _context.UserRoles
+                .Select(r => new SelectListItem
+                {
+                    Value = r.ID.ToString(),
+                    Text = r.Name
+                })
+                .ToList();
+
         }
     }
 }
