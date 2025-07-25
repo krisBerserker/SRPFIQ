@@ -19,17 +19,16 @@
         <input asp-for="Name" class="form-control" type="text" />
         <span asp-validation-for="Name" class="text-danger"></span>
     </div>
+    <div class="form-group">
+        <label asp-for="Description" class="control-label"></label>
+        <input asp-for="Description" class="form-control" type="text" />
+        <span asp-validation-for="Description" class="text-danger"></span>
+    </div>
 
     <div class="form-group form-check">
         <label class="form-check-label">
             <input class="form-check-input" asp-for="Active" /> @Html.DisplayNameFor(model => model.Active)
         </label>
-    </div>
-
-    <div class="form-group">
-        <label asp-for="CreatedDate" class="control-label"></label>
-        <input asp-for="CreatedDate" class="form-control" type="date" />
-        <span asp-validation-for="CreatedDate" class="text-danger"></span>
     </div>
 
     <div class="form-group">
@@ -40,72 +39,63 @@
 <hr />
 <h4>Questions associées</h4>
 
-<!-- Bouton d'ouverture du modal -->
-<button type="button" class="btn btn-outline-primary btn-sm mb-3" data-toggle="modal" data-target="#addQuestionModal">
+<button type="button" class="btn btn-outline-primary btn-sm mb-3" data-toggle="modal" data-target="#addQuestionModal" id='addQuestionBtn'>
     <i class="fas fa-plus-circle"></i> Ajouter une question
 </button>
 
-<!-- Modal d'ajout de question -->
+<!-- MODAL -->
 <div class="modal fade" id="addQuestionModal" tabindex="-1" role="dialog" aria-labelledby="addQuestionModalLabel" aria-hidden="true" data-backdrop="static">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
-            <form asp-controller="QuestionnaireQuestions" asp-action="Create" method="post" autocomplete="off">
+            <form id="questionForm" asp-controller="QuestionnaireQuestions" asp-action="Create" method="post" autocomplete="off">
                 <div class="modal-header">
                     <h5 class="modal-title" id="addQuestionModalLabel">Nouvelle Question</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Fermer">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-
                 <div class="modal-body">
+                    <input type="hidden" name="ID" id="QuestionID" />
                     <input type="hidden" name="IdQuestionnaire" value="@Model.ID" />
 
-                    <div class="form-group">
+                    @*    <div class="form-group">
                         <label>Ordre</label>
-                        <input name="Order" class="form-control" type="number" />
-                    </div>
-                    <div class="form-group">
-                        <label>Nom</label>
-                        <input name="Name" class="form-control" type="text" />
-                    </div>
-@*                     <div class="form-check mb-2" >
-                        <input class="form-check-input" type="checkbox" name="Active" checked />
-                        <label class="form-check-label">Actif</label>
+                        <input name="Order" id="Order" class="form-control" type="number" />
                     </div> *@
                     <div class="form-group">
+                        <label>Nom</label>
+                        <input name="Name" id="QuestionName" class="form-control" type="text" />
+                    </div>
+                    <div class="form-group">
                         <label>Titre</label>
-                        <input name="Title" class="form-control" type="text" />
+                        <input name="Title" id="Title" class="form-control" type="text" />
                     </div>
                     <div class="form-group">
                         <label>Titre court</label>
-                        <input name="ShortTitle" class="form-control" type="text" />
+                        <input name="ShortTitle" id="ShortTitle" class="form-control" type="text" />
                     </div>
                     <div class="form-group">
                         <label>Instructions</label>
-                        <input name="Instructions" class="form-control" type="text" />
+                        <input name="Instructions" id="Instructions" class="form-control" type="text" />
                     </div>
-
                     <div class="form-group">
                         <label>ID Type de donnée principale</label>
                         <select id="IdMainDataType" name="IdMainDataType" class="form-control" asp-items="ViewBag.MainDataTypes">
                             <option value="">-- Sélectionner --</option>
                         </select>
                     </div>
-
                     <div class="form-group">
                         <label>ID Source Principale</label>
                         <select id="IdMainDataSource" name="IdMainDataSource" class="form-control" asp-items="ViewBag.DataSources">
                             <option value="">-- Sélectionner --</option>
                         </select>
                     </div>
-
                     <div class="form-group" id="subDataTypeGroup" style="display:none;">
                         <label>ID Type de donnée secondaire</label>
                         <select id="IdSubDataType" name="IdSubDataType" class="form-control" asp-items="ViewBag.SubDataTypes">
                             <option value="">-- Sélectionner --</option>
                         </select>
                     </div>
-
                     <div class="form-group" id="subDataSourceGroup" style="display:none;">
                         <label>ID Source secondaire</label>
                         <select id="IdSubDataSource" name="IdSubDataSource" class="form-control" asp-items="ViewBag.DataSources">
@@ -113,15 +103,42 @@
                         </select>
                     </div>
                 </div>
-
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
-                    <button type="submit" class="btn btn-primary">Créer</button>
+                    <button type="submit" class="btn btn-primary" id="submitQuestionBtn">Créer</button>
                 </div>
             </form>
         </div>
     </div>
 </div>
+
+
+
+@* MODAL SUPPRESSION *@
+<!-- Modal de confirmation suppression question -->
+<div class="modal fade" id="confirmDeleteQuestionModal" tabindex="-1" role="dialog" aria-labelledby="confirmDeleteQuestionModalLabel" aria-hidden="true" data-backdrop="static">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <form id="deleteQuestionForm" method="post" >
+        <div class="modal-header">
+          <h5 class="modal-title" id="confirmDeleteQuestionModalLabel">Confirmer la suppression</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Fermer">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p>Voulez-vous vraiment supprimer la question <strong id="questionToDeleteName"></strong> ?</p>
+        </div>
+        <input type="hidden" name="id" id="questionToDeleteId" value="" />
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+          <button type="submit" class="btn btn-danger">Supprimer</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
 
 @if (Model.Questions != null && Model.Questions.Any())
 {
@@ -131,29 +148,61 @@
                 <tr>
                     <th>Order</th>
                     <th>Nom</th>
-                    <th>Titre</th>
+                    <th>Type</th>
                     <th>Actif</th>
                     <th>Actions</th>
                 </tr>
             </thead>
             <tbody>
-                @foreach (var q in Model.Questions)
+                @foreach (var q in Model.Questions.OrderBy(q => q.Order))
                 {
                     <tr>
                         <td>@q.Order</td>
                         <td>@q.Name</td>
-                        <td>@q.Title</td>
-                        <td>@q.Active</td>
+                        <td>@(((List<SelectListItem>)ViewBag.MainDataTypes).FirstOrDefault(item => item.Value == q.IdMainDataType.ToString())?.Text)</td>
+                        @if (@q.Active)
+                        {
+                            <td>Oui</td>
+                        }else
+                        {
+                            <td>Non</td>
+                        }
+
                         <td>
-                            <a asp-controller="QuestionnaireQuestions" asp-action="Edit" asp-route-id="@q.ID" title="Modifier">
-                                <i class="fas fa-edit text-warning"></i>
-                            </a>
-                            <a asp-controller="QuestionnaireQuestions" asp-action="Details" asp-route-id="@q.ID" title="Détails" class="ml-2">
-                                <i class="fas fa-info-circle text-success"></i>
-                            </a>
-                            <a asp-controller="QuestionnaireQuestions" asp-action="Delete" asp-route-id="@q.ID" title="Supprimer" class="ml-2">
-                                <i class="fas fa-trash-alt text-danger"></i>
-                            </a>
+                            <a href="#" class="editQuestionBtn" data-id="@q.ID"><i class="fas fa-edit text-warning"></i></a>
+                            
+                            
+                                <form asp-controller="QuestionnaireQuestions" asp-action="ToggleActive" asp-route-id="@q.ID" method="post" class="d-inline">
+                                    <button type="submit" class="btn btn-link p-0 m-0 align-baseline">
+                                        <i class="fas @(q.Active ? "fa-toggle-on text-success" : "fa-toggle-off text-danger")"></i>
+                                    </button>
+                                </form>
+
+                            <button type="button" class="btn btn-link p-0 m-0 align-baseline text-danger delete-question-btn" data-id="@q.ID" data-name="@q.Name" title="Supprimer">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+
+                              
+                            @* Flèches de montée / descente *@
+                            @{
+                                var isFirst = q.Order == Model.Questions.Min(q => q.Order);
+                                var isLast = q.Order == Model.Questions.Max(q => q.Order);
+                            }
+
+                            @if (!isFirst)
+                            {
+                                <form method="post" asp-controller="QuestionnaireQuestions" asp-action="MoveUp" asp-route-id="@q.ID" asp-route-idQuestionnaire="@Model.ID" class="d-inline">
+                                    <button type="submit" class="btn btn-sm btn-link text-primary"><i class="fas fa-arrow-up"></i></button>
+                                </form>
+                            }
+
+                            @if (!isLast)
+                            {
+                                <form method="post" asp-controller="QuestionnaireQuestions" asp-action="MoveDown" asp-route-id="@q.ID" asp-route-idQuestionnaire="@Model.ID" class="d-inline">
+                                    <button type="submit" class="btn btn-sm btn-link text-primary"><i class="fas fa-arrow-down"></i></button>
+                                </form>
+                            }
+
                         </td>
                     </tr>
                 }
@@ -175,20 +224,16 @@ else
 
     <script>
         $(document).ready(function () {
-
             function updateFields() {
                 var mainType = $('#IdMainDataType').val();
                 var subType = $('#IdSubDataType').val();
 
-                // Gestion IdMainDataSource
                 if (mainType === "1" || mainType === "7") {
-                    // Désactiver et vider
                     $('#IdMainDataSource').val('').prop('disabled', true);
                 } else {
                     $('#IdMainDataSource').prop('disabled', false);
                 }
 
-                // Gestion IdSubDataType
                 if (mainType === "6") {
                     $('#subDataTypeGroup').show();
                 } else {
@@ -196,7 +241,6 @@ else
                     $('#IdSubDataType').val('');
                 }
 
-                // Gestion IdSubDataSource
                 if (subType === "2" || subType === "3") {
                     $('#subDataSourceGroup').show();
                     $('#IdSubDataSource').prop('disabled', false);
@@ -206,18 +250,135 @@ else
                 }
             }
 
-            // Appel initial
             updateFields();
+            $('#IdMainDataType').change(updateFields);
+            $('#IdSubDataType').change(updateFields);
 
-            // Déclencheur sur changement de IdMainDataType
-            $('#IdMainDataType').change(function () {
-                updateFields();
+            $('.editQuestionBtn').on('click', function (e) {
+                e.preventDefault();
+                var questionId = $(this).data('id');
+
+                $.get('/QuestionnaireQuestions/GetQuestion/' + questionId, function (data) {
+                    console.log('Data reçue :', data);
+
+                    $('#addQuestionModalLabel').text('Modifier la question');
+                    $('#questionForm').attr('action', '/QuestionnaireQuestions/Edit');
+                    $('#submitQuestionBtn').text('Modifier');
+                    $('#QuestionID').val(data.id);
+                    $('#Order').val(data.order);
+                    $('#QuestionName').val(data.name);
+                    $('#Title').val(data.title);
+                    $('#ShortTitle').val(data.shortTitle);
+                    $('#Instructions').val(data.instructions);
+                    $('#IdMainDataType').val(data.idMainDataType ?? '').trigger('change');
+                    $('#IdMainDataSource').val(data.idMainDataSource ?? '');
+                    $('#IdSubDataType').val(data.idSubDataType ?? '').trigger('change');
+                    $('#IdSubDataSource').val(data.idSubDataSource ?? '');
+
+                    $('#addQuestionModal').modal('show');
+                });
             });
 
-            // Déclencheur sur changement de IdSubDataType
-            $('#IdSubDataType').change(function () {
+            // Pour ajout
+            $('#addQuestionBtn').on('click', function () {
+                $('#questionForm')[0].reset();
+                $('#questionForm').attr('action', '/QuestionnaireQuestions/Create');
+                $('#addQuestionModalLabel').text('Nouvelle Question');
+                $('#submitQuestionBtn').text('Créer');
+                $('#QuestionID').val('');
                 updateFields();
+                $('#addQuestionModal').modal('show');
             });
+
+            // Gestion confirmation suppression
+               $('.delete-form').on('submit', function (e) {
+                    e.preventDefault();
+
+                    var form = this;
+                    var questionId = $(form).data('id');
+                    var questionName = $(form).data('name');
+
+                    if (confirm('Voulez-vous vraiment supprimer la question "' + questionName + '" ?')) {
+                        $.ajax({
+                            url: $(form).attr('action'),
+                            type: 'POST',
+                            data: $(form).serialize(),
+                            headers: { 'X-Requested-With': 'XMLHttpRequest' },
+                            success: function () {
+                                // Option 1 : recharger toute la page
+                                location.reload();
+
+                                // Option 2 (plus fluide) : supprimer juste la ligne du tableau :
+                                // $(form).closest('tr').remove();
+                            },
+                            error: function (xhr) {
+                                alert('Erreur lors de la suppression : ' + xhr.responseText);
+                            }
+                        });
+                    }
+                });
+
+
+            // Soumission AJAX du formulaire modal pour création/modification
+            $('#questionForm').on('submit', function (e) {
+                e.preventDefault();
+
+                var form = $(this);
+                var url = form.attr('action');
+                var formData = form.serialize();
+
+                $.post(url, formData)
+                    .done(function () {
+                        $('#addQuestionModal').modal('hide'); // Ferme le modal
+                        location.reload(); // Recharge la page
+                    })
+                    .fail(function (xhr) {
+                        console.error('Erreur lors de la soumission :', xhr.responseText);
+                        // Optionnel : afficher un message d’erreur dans le modal
+                    });
+            });
+
+                 var deleteForm = $('#deleteQuestionForm');
+
+        // Quand on clique sur un bouton supprimer dans la liste
+        $('.delete-question-btn').on('click', function () {
+            var questionId = $(this).data('id');
+            var questionName = $(this).data('name');
+
+            // Remplir le modal avec les infos
+            $('#questionToDeleteName').text(questionName);
+            $('#questionToDeleteId').val(questionId);
+
+            // Modifier action du formulaire pour inclure le bon ID (via route si besoin)
+            // Ici on utilise action Delete dans QuestionnaireQuestions, on met juste l'ID en champ caché
+            deleteForm.attr('action', '/QuestionnaireQuestions/Delete/' + questionId);
+
+            // Afficher le modal
+            $('#confirmDeleteQuestionModal').modal('show');
+        });
+
+        // Gestion de la soumission du formulaire dans le modal
+        deleteForm.on('submit', function (e) {
+            e.preventDefault();
+
+            var form = $(this);
+            var url = form.attr('action');
+
+            $.ajax({
+                url: url,
+                type: 'POST',
+                data: form.serialize(),
+                headers: { 'X-Requested-With': 'XMLHttpRequest' },
+                success: function () {
+                    $('#confirmDeleteQuestionModal').modal('hide');
+                    location.reload();  // recharge la page, tu peux aussi supprimer la ligne du tableau à la place
+                },
+                error: function (xhr) {
+                    alert('Erreur lors de la suppression : ' + xhr.responseText);
+                }
+            });
+        });
+
         });
     </script>
 }

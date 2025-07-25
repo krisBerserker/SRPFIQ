@@ -22,6 +22,7 @@ namespace WebApplication_SRPFIQ.Controllers
         // GET: Questionnaires
         public async Task<IActionResult> Index()
         {
+
             return View(await _context.Questionnaires.ToListAsync());
         }
 
@@ -47,10 +48,11 @@ namespace WebApplication_SRPFIQ.Controllers
         // POST: Questionnaires/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,Name,Active,CreatedDate")] Questionnaires questionnaires)
+        public async Task<IActionResult> Create([Bind("ID,Name,Description,Active,CreatedDate")] Questionnaires questionnaires)
         {
             if (ModelState.IsValid)
             {
+                questionnaires.CreatedDate = DateTime.Now;
                 _context.Add(questionnaires);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -99,7 +101,7 @@ namespace WebApplication_SRPFIQ.Controllers
         // POST: Questionnaires/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,Name,Active,CreatedDate")] Questionnaires questionnaires)
+        public async Task<IActionResult> Edit(int id, [Bind("ID,Name,Description,Active,CreatedDate")] Questionnaires questionnaires)
         {
             if (id != questionnaires.ID)
             {
@@ -110,6 +112,7 @@ namespace WebApplication_SRPFIQ.Controllers
             {
                 try
                 {
+                    questionnaires.CreatedDate = DateTime.Now;
                     _context.Update(questionnaires);
                     await _context.SaveChangesAsync();
                 }
@@ -162,12 +165,13 @@ namespace WebApplication_SRPFIQ.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var questionnaires = await _context.Questionnaires.FindAsync(id);
-            if (questionnaires != null)
+            var questionnaire = await _context.Questionnaires.FindAsync(id);
+            if (questionnaire == null)
             {
-                _context.Questionnaires.Remove(questionnaires);
+                return NotFound();
             }
 
+            _context.Questionnaires.Remove(questionnaire);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
@@ -176,5 +180,8 @@ namespace WebApplication_SRPFIQ.Controllers
         {
             return _context.Questionnaires.Any(e => e.ID == id);
         }
+
+
+
     }
 }

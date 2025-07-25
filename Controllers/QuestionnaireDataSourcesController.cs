@@ -58,6 +58,8 @@ namespace WebApplication_SRPFIQ.Controllers
         {
             if (ModelState.IsValid)
             {
+                questionnaireDataSources.CreatedDate = DateTime.Now;
+
                 _context.Add(questionnaireDataSources);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -115,6 +117,21 @@ namespace WebApplication_SRPFIQ.Controllers
             }
             return View(questionnaireDataSources);
         }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ToggleActive(int id)
+        {
+            var questionnaireDataSources = await _context.QuestionnaireDataSources.FindAsync(id);
+            if (questionnaireDataSources == null) return NotFound();
+
+            questionnaireDataSources.Active = !questionnaireDataSources.Active;
+            _context.Update(questionnaireDataSources);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(Index));
+        }
+
 
         // GET: QuestionnaireDataSources/Delete/5
         public async Task<IActionResult> Delete(int? id)
