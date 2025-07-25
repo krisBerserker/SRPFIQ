@@ -30,6 +30,11 @@
                         <button type="submit" class="btn btn-primary w-100">Se connecter</button>
                     </form>
 
+                    <form asp-action="Register" asp-controller="Account" method="get" class="form-inline">
+                        <button type="submit" class="btn btn-outline-danger">Créer un compte</button>
+                        @Html.AntiForgeryToken()
+                    </form>
+
                         @if (User.Identity.IsAuthenticated)
                         {
                             <form asp-action="Logout" asp-controller="Account" method="post" class="form-inline">

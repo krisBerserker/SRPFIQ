@@ -3,7 +3,7 @@ using System.Security.Cryptography;
 
 namespace WebApplication_SRPFIQ.Utils
 {
-    public class Utils
+    public class PasswordUtils
     {
         public string ComputeSha256Hash(string rawData)
         {
