@@ -81,8 +81,9 @@ namespace WebApplication_SRPFIQ.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(SuiviViewModel suiviViewModel)
         {
-            int numberLastMeeting = _context.Meetings.Where(m =>
-            m.IdRequest == suiviViewModel.IDRequest).OrderByDescending(m=> m.EventDate).Last().MeetingNumber;
+            int numberLastMeeting = (_context.Meetings.Any(m => m.IdRequest == suiviViewModel.IDRequest)? _context.Meetings.Where(m =>
+            m.IdRequest == suiviViewModel.IDRequest).OrderByDescending(m=> m.EventDate).Last().MeetingNumber : 0);
+
             Meetings meetings = new Meetings
             {
                 MeetingNumber = numberLastMeeting+1,

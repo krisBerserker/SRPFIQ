@@ -82,7 +82,7 @@ namespace WebApplication_SRPFIQ.Controllers
         {
             MedicalNotes medicalNotes = new MedicalNotes
             {
-                ID = 0,
+                //ID = 0,
                 EventDate = medicalNotesViewModel.Date.Add(TimeSpan.Parse(medicalNotesViewModel.Heure)),
                 Description = medicalNotesViewModel.Intervention,
                 IdRequest = medicalNotesViewModel.IDRequest,
