@@ -24,7 +24,7 @@ namespace WebApplication_SRPFIQ.Controllers
         }
 
         // GET: Resources
-        public async Task<IActionResult> Index(int? SelectedCategorieId, int? SelectedCityId, string SelectedBus)
+        public async Task<IActionResult> Index(int? SelectedCategorieId, int? SelectedCityId, string SelectedBus, int pageNumber = 1, int pageSize = 10)
         {
             var categories = _context.ResourceCategories
          .Select(c => new SelectListItem { Value = c.ID.ToString(), Text = c.Name })
@@ -65,7 +65,13 @@ namespace WebApplication_SRPFIQ.Controllers
 
             try
             {
-                model.Resultats = await query.ToListAsync();
+                model.Resultats = await query
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+                ViewBag.CurrentPage = pageNumber;
+                ViewBag.TotalPages = (int)Math.Ceiling((double)query.Count() / pageSize);
             }
             catch (Exception ex)
             {

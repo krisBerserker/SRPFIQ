@@ -22,7 +22,56 @@
 
     <button type="submit" class="btn btn-primary mt-2">Rechercher</button>
 </form>
+@{
+    int currentPage = ViewBag.CurrentPage;
+    int totalPages = ViewBag.TotalPages;
+}
 
+<!-- Pagination -->
+@if (totalPages > 1)
+{
+    <nav aria-label="Pagination">
+        <ul class="pagination">
+            @* Bouton précédent *@
+            <li class="page-item @(currentPage == 1 ? "disabled" : "")">
+                <a class="page-link" href="@Url.Action("Index", new {
+                    SelectedCategorieId = Model.SelectedCategorieId,
+                    SelectedCityId = Model.SelectedCityId,
+                    SelectedBus = Model.SelectedBus,
+                    pageNumber = currentPage - 1,
+                })">Précédent</a>
+            </li>
+
+            @* Quelques pages autour de la page actuelle *@
+            @{
+                int start = Math.Max(1, currentPage - 2);
+                int end = Math.Min(totalPages, currentPage + 2);
+            }
+            @for (int i = start; i <= end; i++)
+            {
+                <li class="page-item @(i == currentPage ? "active" : "")">
+                    <a class="page-link" href="@Url.Action("Index", new {
+                        SelectedCategorieId = Model.SelectedCategorieId,
+                        SelectedCityId = Model.SelectedCityId,
+                        SelectedBus = Model.SelectedBus,
+                        pageNumber = i,
+                    })">@i</a>
+                </li>
+            }
+
+            @* Bouton suivant *@
+            <li class="page-item @(currentPage >= totalPages ? "disabled" : "")">
+                <a class="page-link" href="@Url.Action("Index", new {
+                    SelectedCategorieId = Model.SelectedCategorieId,
+                    SelectedCityId = Model.SelectedCityId,
+                    SelectedBus = Model.SelectedBus,
+                    pageNumber = currentPage + 1,
+                })">Suivant</a>
+            </li>
+        </ul>
+    </nav>
+
+}
 
 <table class="table table-bordered">
     <thead>

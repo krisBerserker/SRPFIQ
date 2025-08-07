@@ -12,6 +12,8 @@ namespace WebApplication_SRPFIQ.ViewModel
         public List<SelectListItem> Categories { get; set; }
         public List<SelectListItem> Cities { get; set; }
         public List<Resources> Resultats { get; set; }
+
+        
     }
 
 }
