@@ -12,12 +12,13 @@
     <hr class="sidebar-divider my-0" />
 
     <!-- Dashboard -->
-    <li class="nav-item active">
+    <li class="nav-item">
         <a class="nav-link" asp-controller="Home" asp-action="Index">
             <i class="fas fa-fw fa-tachometer-alt"></i>
-            <span>Dashboard</span>
+            <span class="nav-text">Dashboard</span>
         </a>
     </li>
+
 
     <hr class="sidebar-divider" />
 
@@ -30,7 +31,7 @@
         </a>
         <div id="collapseDemandes" class="collapse" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
-                <a class="collapse-item" asp-controller="Requests" asp-action="Index">Liste Des Demandes</a>
+                <a class="collapse-item" asp-controller="Requests" asp-action="Index" asp-route-id="@User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value">Liste Des Demandes</a>
                 <a class="collapse-item" asp-controller="RequestNotes" asp-action="Index">Request Notes</a>
                 <a class="collapse-item" asp-controller="UserAssignedRequests" asp-action="Index">Assigner les demandes</a>
                 <a class="collapse-item" asp-controller="MedicalNotes" asp-action="Index">Medical Notes</a>
@@ -70,7 +71,7 @@
             <div class="bg-white py-2 collapse-inner rounded">
                 <a class="collapse-item" asp-controller="Users" asp-action="Index">Utilisateurs</a>
                 <a class="collapse-item" asp-controller="UserRoles" asp-action="Index">Roles D'Utilisateurs</a>
-                <a class="collapse-item" asp-controller="UserPermissions" asp-action="Index">les Permissions</a>
+                <a class="collapse-item" asp-controller="UserPermissions" asp-action="Index">Permissions</a>
             </div>
         </div>
     </li>
@@ -85,8 +86,8 @@
         <div id="collapseQuestionnaires" class="collapse" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
                 <a class="collapse-item" asp-controller="Questionnaires" asp-action="Index">Questionnaires</a>
-                <a class="collapse-item" asp-controller="QuestionnaireQuestions" asp-action="Index">Questionnaire Questions</a>
-                <a class="collapse-item" asp-controller="QuestionnaireAnswers" asp-action="Index">Questionnaire Answers</a>
+                @* <a class="collapse-item" asp-controller="QuestionnaireQuestions" asp-action="Index">Questions</a> *@
+                <a class="collapse-item" asp-controller="QuestionnaireAnswers" asp-action="Index"> Reponse </a>
                 <a class="collapse-item" asp-controller="QuestionnaireAnswerResults" asp-action="Index">Questionnaire Answer Results</a>
                 <a class="collapse-item" asp-controller="QuestionnaireDataSourceOptions" asp-action="Index">DataSource Options</a>
                 <a class="collapse-item" asp-controller="QuestionnaireDataSources" asp-action="Index">Data Sources</a>

@@ -6,13 +6,16 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-    <title>@ViewData["Title"] - SB Admin 2</title>
+    <title>@ViewData["Title"] - SRPFIQ</title>
 
     <!-- Custom fonts for this template-->
     <link href="~/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css?family=Nunito:200,300,400,600,700,800,900" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
 
     <!-- Custom styles for this template-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <link href="~/css/sb-admin-2.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="~/css/home.css" asp-append-version="true" />
 </head>
@@ -21,20 +24,31 @@
     <div id="wrapper">
 
         <!-- Sidebar -->
-        @Html.Partial("_Sidebar") <!-- tu peux créer un fichier _Sidebar.cshtml avec le code du menu -->
+        @Html.Partial("_Sidebar")
         <!-- End of Sidebar -->
         <!-- Content Wrapper -->
         <div id="content-wrapper" class="d-flex flex-column">
             <div id="content">
+
                 <!-- Topbar -->
-                @Html.Partial("_Topbar") <!-- idem, tu peux extraire la barre du haut -->
+                @Html.Partial("_Topbar")
                 <!-- End of Topbar -->
                 <!-- Main Content -->
                 <div class="container-fluid">
                     @RenderBody()
                 </div>
-            </div>
 
+            </div>
+@* 
+
+            @{
+                var modalModel = ViewBag.ModalModel as WebApplication_SRPFIQ.Models.Questionnaires;
+            }
+            @if (modalModel != null)
+            {
+                @Html.Partial("~/Views/QuestionnaireQuestions/ModalQuestions.cshtml", modalModel)
+            }
+ *@
             <!-- Footer -->
             <footer class="sticky-footer bg-white">
                 <div class="container my-auto">
@@ -45,6 +59,8 @@
             </footer>
         </div>
     </div>
+
+
 
     <!-- Scripts -->
     <script src="~/vendor/jquery/jquery.min.js"></script>

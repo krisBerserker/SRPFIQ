@@ -7,7 +7,7 @@
 <h1>QuestionnaireQuestions</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create" class="btn-link">Create New</a>
 </p>
 <table class="table">
     <thead>
@@ -85,7 +85,7 @@
                 @Html.DisplayFor(modelItem => item.IdSubDataSource)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Questionnaire.ID)
+                @Html.DisplayFor(modelItem => item.Questionnaire.Name)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.QuestionnaireDataSources.Name)

@@ -1,0 +1,167 @@
+﻿@model WebApplication_SRPFIQ.Models.Questionnaires
+
+@{
+    ViewData["Title"] = "Afficher le Questionnaire";
+}
+
+<h2>@Model.Name</h2>
+<hr />
+
+<form method="post" class="styled-form">
+    @foreach (var question in Model.Questions.OrderBy(q => q.Order))
+    {
+        <div class="form-group mb-4">
+            <label><strong>@question.Order. @question.Name</strong></label>
+
+            @{
+
+
+    
+                var mainOptions = (question.QuestionnaireDataSources?.Options ?? new List<WebApplication_SRPFIQ.Models.QuestionnaireDataSourceOptions>())
+                .Where(o => o.Active)
+                .Select(o => new { o.ID, o.DisplayText })
+                .ToList();
+
+             
+
+
+
+                // var subOptions = Model.Questions
+                // .SelectMany(q =>
+                // q.QuestionnaireDataSources?.Options
+                // .Where(opt => opt.IdQuestionnaireDataSource == q.IdSubDataType && opt.Active)
+                // ?? new List<WebApplication_SRPFIQ.Models.QuestionnaireDataSourceOptions>())
+                // .Select(opt => opt.DisplayText)
+                // .ToList();
+
+
+                // On suppose que tu peux accéder à toutes les QuestionnaireQuestions depuis Model.Questions
+                // Trouver IdSubDataSource de cette question
+                var subDataSourceId = question;
+
+                var subOptions = new List<string>();
+
+                if (subDataSourceId.IdSubDataSource != null)
+                {
+                   
+                
+
+                 subOptions = (question.QuestionnaireDataSources?.Options ?? new List<WebApplication_SRPFIQ.Models.QuestionnaireDataSourceOptions>())
+                .Where(opt => opt.IdQuestionnaireDataSource == subDataSourceId.IdSubDataSource && opt.Active)
+                .Select(opt => opt.DisplayText)
+                .ToList();
+
+                }
+
+                // var subOptions = Model.Questions
+                // .SelectMany(q => q.QuestionnaireDataSources?.Options ?? new List<WebApplication_SRPFIQ.Models.QuestionnaireDataSourceOptions>())
+                // .Where(opt => opt.IdQuestionnaireDataSource == question.IdSubDataSource && opt.Active)
+                // .Select(opt => opt.DisplayText)
+                // .ToList();
+
+
+
+            }
+
+
+
+
+
+            @switch (question.IdMainDataType)
+            {
+                case 1: // Champ texte
+                    <input type="text" name="q@question.ID" class="form-control" />
+                    break;
+
+                case 2: // Radio bouton
+                    foreach (var opt in mainOptions)
+                    {
+                        <div class="form-check">
+                            <input type="radio" name="q@question.ID" value="@opt.DisplayText" class="form-check-input" />
+                            <label class="form-check-label">@opt.DisplayText</label>
+                        </div>
+                    }
+                    break;
+
+                case 3: // Case à cocher
+                    foreach (var opt in mainOptions)
+                    {
+                        <div class="form-check">
+                            <input type="checkbox" name="q@question.ID" value="@opt.DisplayText" class="form-check-input" />
+                            <label class="form-check-label">@opt.DisplayText</label>
+                        </div>
+                    }
+                    break;
+
+                case 4: // Liste déroulante
+                    <select class="form-control" name="q@question.ID">
+                        <option disabled selected>-- Sélectionner --</option>
+                        @foreach (var opt in mainOptions)
+                        {
+                            <option value="@opt.DisplayText">@opt.DisplayText</option>
+                        }
+                    </select>
+                    break;
+
+                case 5: // Liste déroulante multiple
+                    <select class="form-control" name="q@question.ID" multiple>
+                        @foreach (var opt in mainOptions)
+                        {
+                            <option value="@opt.DisplayText">@opt.DisplayText</option>
+                        }
+                    </select>
+                    break;
+
+                case 6: // Tableau composé
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>@question.Name</th>
+                                @foreach (var subOpt in subOptions)
+                                {
+                                    <th>@subOpt</th>
+                                }
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @for (int i = 0; i < mainOptions.Count; i++)
+                            {
+                                var mainOpt = mainOptions[i];
+                                <tr>
+                                    <td>@mainOpt.DisplayText</td>
+                                    @for (int j = 0; j < subOptions.Count; j++)
+                                    {
+                                        var subOpt = subOptions[j];
+                                        <td class="text-center">
+                                            <input type="checkbox"
+                                                   name="q@question.ID_row@i_col@j"
+                                                   value="@mainOpt.DisplayText-@subOpt" />
+                                        </td>
+                                    }
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                    break;
+
+                case 7: // Champ texte multiple
+                    <textarea class="form-control" name="q@question.ID" rows="4"></textarea>
+                    break;
+
+                default:
+                    <p class="text-muted">Type inconnu : @question.IdMainDataType</p>
+                    break;
+            }
+        </div>
+    }
+
+    <button type="submit" class="btn btn-primary">Soumettre</button>
+</form>
+
+<style>
+    table.table-bordered th,
+    table.table-bordered td {
+        vertical-align: middle;
+        text-align: center;
+    }
+</style>

@@ -1,12 +1,70 @@
-﻿@model WebApplication_SRPFIQ.Models.Meetings
+﻿@* @model WebApplication_SRPFIQ.Models.Meetings *@
+@model WebApplication_SRPFIQ.ViewModels.SuiviViewModel
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Suivi";
+    bool lectureSeule = Model.Mode == "Affichage";
+    string title = (lectureSeule ? $"Suivi {Model.Numero}" : "Ajout d'une note de suivi");
 }
 
-<h1>Details</h1>
+<h1>@title</h1>
 
-<div>
+
+    <form asp-action="Create" method="post">
+        <input type="hidden" asp-for="Mode"/>
+        <input type="hidden" asp-for="IDRequest" />
+        <div class="row mb-3">
+            <div class="col-md-3">
+                <label for="Date" class="form-label">Date</label>
+                <div class="input-group">
+                    <input asp-for="Date" type="date" class="form-control" readonly="@lectureSeule"/>
+                    <span class="input-group-text"><i class="bi bi-calendar"></i></span>
+                </div>
+            </div>
+            <div class="col-md-5">
+                <label class="form-label">Type rencontre :</label><br />
+                <div class="btn-group" role="group">
+                    @foreach (var type in new[] { "Téléphonique", "Texto", "Présentiel" })
+                    {
+                        var id = "type" + type;
+                        <input type="radio" class="btn-check" name="TypeRencontre" id="@id"
+                               value="@type"
+                        @(Model.TypeRencontre == type ? "checked" : "")
+                        @(lectureSeule ? "disabled" : "") />
+                        <label class="btn btn-outline-primary" for="@id">@type</label>
+                    }
+                </div>
+             </div>
+        </div>
+
+            <div class="mb-3 col-md-3">
+                <label for="Duree" class="form-label">Durée (min)</label>
+                <input asp-for="Duree" class="form-control" readonly="@lectureSeule" />
+            </div>
+
+            <div class="mb-3">
+                <label for="Notes" class="form-label">Notes</label>
+                <textarea asp-for="Notes" class="form-control" rows="3" readonly="@lectureSeule"></textarea>
+            </div>
+
+            <div class="mb-3">
+                <label for="Actions" class="form-label">Actions</label>
+                <textarea asp-for="Actions" class="form-control" rows="3" readonly="@lectureSeule"></textarea>
+            </div>
+
+            <div class="mb-3">
+                <label for="Delais" class="form-label">Délais</label>
+                <textarea asp-for="Delais" class="form-control" rows="3" readonly="@lectureSeule"></textarea>
+            </div>
+
+            @if (!lectureSeule)
+            {
+                <button type="submit" class="btn btn-outline-dark">Sauvegarder</button>
+            }
+    </form>
+
+
+@* <div>
     <h4>Meetings</h4>
     <hr />
     <dl class="row">
@@ -52,33 +110,9 @@
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.Delay)
         </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.CreatedDate)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.CreatedDate)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.LastModifiedDate)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.LastModifiedDate)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.User)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.User.FirstName)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Request)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Request.FolioNumber)
-        </dd>
     </dl>
 </div>
 <div>
     <a asp-action="Edit" asp-route-id="@Model?.ID">Edit</a> |
     <a asp-action="Index">Back to List</a>
-</div>
+</div> *@

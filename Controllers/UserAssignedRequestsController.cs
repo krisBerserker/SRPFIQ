@@ -20,10 +20,17 @@ namespace WebApplication_SRPFIQ.Controllers
         }
 
         // GET: UserAssignedRequests
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int id)
         {
-            var sRPFIQDbContext = _context.UserAssignedRequests.Include(u => u.Requests).Include(u => u.Users);
-            return View(await sRPFIQDbContext.ToListAsync());
+
+            var utilisateurConnecter = _context.Users.FirstOrDefault(u => u.ID == id);
+
+            if (_context.UserPermissions.Any(up => up.IdUser == utilisateurConnecter.ID && up.IdUserRole == 5))
+            {
+                var sRPFIQDbContext = _context.UserAssignedRequests.Include(u => u.Requests).Include(u => u.Users);
+                return View(await sRPFIQDbContext.ToListAsync());
+            }
+            return View();
         }
 
         // GET: UserAssignedRequests/Details/5
@@ -59,13 +66,13 @@ namespace WebApplication_SRPFIQ.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,IdRequest,IdUser")] UserAssignedRequests userAssignedRequests)
+        public async Task<IActionResult> Create([Bind("IdRequest,IdUser")] UserAssignedRequests userAssignedRequests)
         {
             if (ModelState.IsValid)
             {
                 _context.Add(userAssignedRequests);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Index", "Users");
             }
             ViewData["IdRequest"] = new SelectList(_context.Requests, "ID", "FolioNumber", userAssignedRequests.IdRequest);
             ViewData["IdUser"] = new SelectList(_context.Users, "ID", "FirstName", userAssignedRequests.IdUser);

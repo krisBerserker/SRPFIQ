@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using WebApplication_SRPFIQ.Data;
 using WebApplication_SRPFIQ.Models;
+using WebApplication_SRPFIQ.ViewModels;
 
 namespace WebApplication_SRPFIQ.Controllers
 {
@@ -43,15 +45,33 @@ namespace WebApplication_SRPFIQ.Controllers
                 return NotFound();
             }
 
-            return View(meetings);
+            var model = new SuiviViewModel
+            {
+                Numero = meetings.MeetingNumber,
+                Date = meetings.EventDate,
+                Duree = meetings.Amount,
+                TypeRencontre = (meetings.IdMeetingType == 1 ? "Téléphonique" : meetings.IdMeetingType == 2 ? "Texto" : "Présentiel"),
+                Notes = meetings.Note,
+                Actions = meetings.Action,
+                Delais = meetings.Delay,
+                Mode = "Affichage"
+            };
+
+            return View(model);
         }
 
-        // GET: Meetings/Create
-        public IActionResult Create()
+        // GET: Meetings/Create/5
+        public IActionResult Create(int id)
         {
             ViewData["IdRequest"] = new SelectList(_context.Requests, "ID", "FolioNumber");
             ViewData["IdUser"] = new SelectList(_context.Users, "ID", "FirstName");
-            return View();
+            var model = new SuiviViewModel
+            {
+                IDRequest = id,
+                Date = DateTime.Now,
+                Mode = "Ajout"
+            };
+            return View("Details", model);
         }
 
         // POST: Meetings/Create
@@ -59,13 +79,31 @@ namespace WebApplication_SRPFIQ.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,IdRequest,IdUser,MeetingNumber,EventDate,IdMeetingType,Amount,Note,Action,Delay,CreatedDate,LastModifiedDate")] Meetings meetings)
+        public async Task<IActionResult> Create(SuiviViewModel suiviViewModel)
         {
+            int numberLastMeeting = (_context.Meetings.Any(m => m.IdRequest == suiviViewModel.IDRequest)? _context.Meetings.Where(m =>
+            m.IdRequest == suiviViewModel.IDRequest).OrderByDescending(m=> m.EventDate).Last().MeetingNumber : 0);
+
+            Meetings meetings = new Meetings
+            {
+                MeetingNumber = numberLastMeeting+1,
+                EventDate = suiviViewModel.Date,
+                Amount = suiviViewModel.Duree,
+                Delay = suiviViewModel.Delais,
+                IdMeetingType = (suiviViewModel.TypeRencontre == "Téléphonique"? 1 : suiviViewModel.TypeRencontre == "Texto" ? 2 : 3),
+                Action = suiviViewModel.Actions,
+                IdRequest = suiviViewModel.IDRequest,
+                CreatedDate = DateTime.Now,
+                LastModifiedDate = DateTime.Now,
+                Note = suiviViewModel.Notes,
+                IdUser = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value),
+                
+            };
             if (ModelState.IsValid)
             {
                 _context.Add(meetings);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Details", "Requests", new { id = suiviViewModel.IDRequest });
             }
             ViewData["IdRequest"] = new SelectList(_context.Requests, "ID", "FolioNumber", meetings.IdRequest);
             ViewData["IdUser"] = new SelectList(_context.Users, "ID", "FirstName", meetings.IdUser);

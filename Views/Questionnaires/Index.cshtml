@@ -7,47 +7,94 @@
 <h1>Questionnaires</h1>
 
 <p>
-    <a asp-action="Create" class="btn-link">Create New</a>
+    <a asp-action="Create" class="btn-link">Ajouter un Questionnaire</a>
 </p>
+
 <table class="table">
     <thead>
         <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.ID)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Name)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Active)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CreatedDate)
-            </th>
-            <th></th>
+            <th>@Html.DisplayNameFor(model => model.ID)</th>
+            <th>@Html.DisplayNameFor(model => model.Name)</th>
+            <th>@Html.DisplayNameFor(model => model.Active)</th>
+            <th>@Html.DisplayNameFor(model => model.CreatedDate)</th>
+            <th>Actions</th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@Html.DisplayFor(modelItem => item.ID)</td>
+                <td>@Html.DisplayFor(modelItem => item.Name)</td>
+                <td>@Html.DisplayFor(modelItem => item.Active)</td>
+                <td>@Html.DisplayFor(modelItem => item.CreatedDate)</td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.ID)
+                    <a asp-controller="Questionnaires" asp-action="Afficher" asp-route-id="@item.ID" title="Afficher le questionnaire">
+                        <i class="fas fa-eye text-info mr-2"></i>
+                    </a>
+
+                    <a asp-action="Edit" asp-route-id="@item.ID" title="Gérer">
+                        <i class="fas fa-edit text-primary mr-2"></i>
+                    </a>
+
+                    @if (!item.Active)
+                    {
+                        <form asp-action="ToggleActive" asp-route-id="@item.ID" method="post" class="d-inline">
+                            <button type="submit" title="@(item.Active ? "Désactiver" : "Activer")" class="btn btn-link p-0 m-0 align-baseline">
+                                <i class="fas @(item.Active ? "fa-toggle-on text-success" : "fa-toggle-off text-danger")"></i>
+                            </button>
+                        </form>
+
+                        <button type="button" class="btn btn-link p-0 m-0 align-baseline text-danger" data-toggle="modal" data-target="#confirmDeleteModal" data-id="@item.ID" data-name="@item.Name" title="Supprimer">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+                    }
                 </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Active)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CreatedDate)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.ID">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
-            </td>
-        </tr>
-}
+
+            </tr>
+        }
     </tbody>
 </table>
+
+<!-- Modal Bootstrap -->
+<div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id="deleteForm" method="post" asp-action="Delete">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="confirmDeleteModalLabel">Confirmer la suppression</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Fermer">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Voulez-vous vraiment supprimer le questionnaire <strong id="questionnaireName"></strong> ?</p>
+                </div>
+                <input type="hidden" name="id" id="questionnaireId" value="" />
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+                    <button type="submit" class="btn btn-danger">Supprimer</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#confirmDeleteModal').on('show.bs.modal', function (event) {
+                var button = $(event.relatedTarget); // bouton qui a déclenché le modal
+                var id = button.data('id');          // récupérer l'ID
+                var name = button.data('name');      // récupérer le nom
+
+                var modal = $(this);
+                modal.find('#questionnaireName').text(name);
+                modal.find('#questionnaireId').val(id);
+
+                // Met à jour l'URL du formulaire pour le bon id (en option)
+                // Si tu veux faire un asp-route-id, ce n'est pas nécessaire ici car l'id est en input caché
+            });
+        });
+    </script>
+}

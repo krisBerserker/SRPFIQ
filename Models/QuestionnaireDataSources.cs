@@ -14,5 +14,7 @@ namespace WebApplication_SRPFIQ.Models
         public bool Active { get; set; } = false;
         [DisplayName("Date de création")]
         public DateTime CreatedDate { get; set; } //Date de création système
+
+        public ICollection<QuestionnaireDataSourceOptions>? Options { get; set; }
     }
 }
