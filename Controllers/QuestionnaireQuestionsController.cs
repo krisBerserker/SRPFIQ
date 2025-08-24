@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -21,52 +20,30 @@ namespace WebApplication_SRPFIQ.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var sRPFIQDbContext = _context.QuestionnaireQuestions
+            var questions = _context.QuestionnaireQuestions
                 .Include(q => q.Questionnaire)
-                .Include(q => q.QuestionnaireDataSources);
-            return View(await sRPFIQDbContext.ToListAsync());
-        }
+                .OrderBy(q => q.Order);
 
+            return View(await questions.ToListAsync());
+        }
 
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null) return NotFound();
 
-            var questionnaireQuestions = await _context.QuestionnaireQuestions
+            var question = await _context.QuestionnaireQuestions
                 .Include(q => q.Questionnaire)
-                .Include(q => q.QuestionnaireDataSources)
-                .FirstOrDefaultAsync(m => m.ID == id);
-            if (questionnaireQuestions == null) return NotFound();
+                .FirstOrDefaultAsync(q => q.ID == id);
 
-            return View(questionnaireQuestions);
+            if (question == null) return NotFound();
+
+            return View(question);
         }
 
         [HttpGet]
         public IActionResult Create()
         {
-            ViewBag.MainDataTypes = new List<SelectListItem>
-            {
-                new SelectListItem { Value = "1", Text = "Champ texte" },
-                new SelectListItem { Value = "2", Text = "Radio Bouton" },
-                new SelectListItem { Value = "3", Text = "Case à cocher" },
-                new SelectListItem { Value = "4", Text = "Liste déroulante" },
-                new SelectListItem { Value = "5", Text = "Liste déroulante multiple" },
-                new SelectListItem { Value = "6", Text = "Tableau composé" },
-                new SelectListItem { Value = "7", Text = "Champ texte multiple" }
-            };
-
-            ViewBag.SubDataTypes = new List<SelectListItem>
-            {
-                new SelectListItem { Value = "2", Text = "Radio Bouton" },
-                new SelectListItem { Value = "3", Text = "Case à cocher" }
-            };
-
-            var dataSources = _context.QuestionnaireDataSources
-                .Select(ds => new { ds.ID, ds.Name })
-                .ToList();
-
-            ViewBag.DataSources = new SelectList(dataSources, "ID", "Name");
-
+            LoadViewBags();
             return View();
         }
 
@@ -74,62 +51,37 @@ namespace WebApplication_SRPFIQ.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("IdQuestionnaire,Order,Name,Active,Title,ShortTitle,Instructions,IdMainDataType,IdMainDataSource,IdSubDataType,IdSubDataSource")] QuestionnaireQuestions questionnaireQuestions)
         {
-            // Validation métier personnalisée
+            // Validation métier
             if (questionnaireQuestions.IdMainDataType != 1 && questionnaireQuestions.IdMainDataType != 7)
             {
                 if (questionnaireQuestions.IdMainDataSource == null)
-                {
-                    ModelState.AddModelError("IdMainDataSource", "Une source de données est requise pour ce type de contrôle HTML.");
-                }
+                    ModelState.AddModelError("IdMainDataSource", "Une source de données est requise.");
             }
 
             if (questionnaireQuestions.IdMainDataType == 6)
             {
-                if (questionnaireQuestions.IdSubDataType == null)
-                {
-                    ModelState.AddModelError("IdSubDataType", "Un type de contrôle secondaire est requis pour un tableau composé.");
-                }
-                else if (questionnaireQuestions.IdSubDataType != 2 && questionnaireQuestions.IdSubDataType != 3)
-                {
-                    ModelState.AddModelError("IdSubDataType", "Le type de contrôle secondaire doit être Radio Bouton (2) ou Case à cocher (3).");
-                }
+                if (questionnaireQuestions.IdSubDataType is null || (questionnaireQuestions.IdSubDataType != 2 && questionnaireQuestions.IdSubDataType != 3))
+                    ModelState.AddModelError("IdSubDataType", "Le type secondaire doit être Radio (2) ou Checkbox (3).");
 
                 if (questionnaireQuestions.IdSubDataSource == null)
-                {
-                    ModelState.AddModelError("IdSubDataSource", "Une source de données secondaire est requise pour un tableau composé.");
-                }
+                    ModelState.AddModelError("IdSubDataSource", "Une source secondaire est requise.");
             }
 
-
-
-            var maxOrder = _context.QuestionnaireQuestions
+            // Gestion automatique de l’ordre
+            questionnaireQuestions.Order = (_context.QuestionnaireQuestions
                 .Where(q => q.IdQuestionnaire == questionnaireQuestions.IdQuestionnaire)
-                .Select(q => (int?)q.Order)
-                .Max() ?? 0;
-
-
-            questionnaireQuestions.Order = maxOrder + 1;
-
-
+                .Max(q => (int?)q.Order) ?? 0) + 1;
 
             if (!ModelState.IsValid)
             {
-                // Récupérer les erreurs pour le retour AJAX
-                var errors = ModelState
-                    .Where(kvp => kvp.Value.Errors.Any())
-                    .ToDictionary(
-                        kvp => kvp.Key,
-                        kvp => kvp.Value.Errors.Select(e => e.ErrorMessage).ToArray()
-                    );
-
-                return BadRequest(errors);
+                LoadViewBags();
+                return View(questionnaireQuestions);
             }
 
-            // Ajout en base et sauvegarde
             _context.Add(questionnaireQuestions);
             await _context.SaveChangesAsync();
 
-            return Ok();
+            return RedirectToAction(nameof(Index));
         }
 
         [HttpGet]
@@ -140,54 +92,52 @@ namespace WebApplication_SRPFIQ.Controllers
             var question = await _context.QuestionnaireQuestions.FindAsync(id);
             if (question == null) return NotFound();
 
-            // Rechargement des ViewBags si utilisé dans vue directe (rare avec modals)
-            ViewBag.MainDataTypes = new List<SelectListItem>
-    {
-        new SelectListItem { Value = "1", Text = "Champ texte" },
-        new SelectListItem { Value = "2", Text = "Radio Bouton" },
-        new SelectListItem { Value = "3", Text = "Case à cocher" },
-        new SelectListItem { Value = "4", Text = "Liste déroulante" },
-        new SelectListItem { Value = "5", Text = "Liste déroulante multiple" },
-        new SelectListItem { Value = "6", Text = "Tableau composé" },
-        new SelectListItem { Value = "7", Text = "Champ texte multiple" }
-    };
-
-            ViewBag.SubDataTypes = new List<SelectListItem>
-    {
-        new SelectListItem { Value = "2", Text = "Radio Bouton" },
-        new SelectListItem { Value = "3", Text = "Case à cocher" }
-    };
-
-            var dataSources = _context.QuestionnaireDataSources
-                .Select(ds => new { ds.ID, ds.Name })
-                .ToList();
-            ViewBag.DataSources = new SelectList(dataSources, "ID", "Name", question.IdMainDataSource);
+            LoadViewBags(question.IdMainDataSource);
 
             return View(question);
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, [Bind("ID,IdQuestionnaire,Name,Active,Title,ShortTitle,Instructions,IdMainDataType,IdMainDataSource,IdSubDataType,IdSubDataSource")] QuestionnaireQuestions questionnaireQuestions)
+        {
+            if (id != questionnaireQuestions.ID) return NotFound();
 
-        [HttpGet]
-        public async Task<IActionResult> GetQuestion(int id)
+            if (ModelState.IsValid)
+            {
+                var existing = await _context.QuestionnaireQuestions
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync(q => q.ID == id);
+
+                if (existing == null) return NotFound();
+
+                questionnaireQuestions.Order = existing.Order; // garder l’ordre original
+
+                _context.Update(questionnaireQuestions);
+                await _context.SaveChangesAsync();
+
+                return RedirectToAction(nameof(Index));
+            }
+
+            LoadViewBags(questionnaireQuestions.IdMainDataSource);
+            return View(questionnaireQuestions);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ToggleActive(int id)
         {
             var question = await _context.QuestionnaireQuestions.FindAsync(id);
-            if (question == null)
-                return NotFound();
+            if (question == null) return NotFound();
 
-            return Json(new
-            {
-                id = question.ID,
-                order = question.Order,
-                name = question.Name,
-                title = question.Title,
-                shortTitle = question.ShortTitle,
-                instructions = question.Instructions,
-                idMainDataType = question.IdMainDataType,
-                idMainDataSource = question.IdMainDataSource,
-                idSubDataType = question.IdSubDataType,
-                idSubDataSource = question.IdSubDataSource
-            });
+            question.Active = !question.Active;
+            _context.Update(question);
+            await _context.SaveChangesAsync();
+
+            var referer = Request.Headers["Referer"].ToString();
+            return !string.IsNullOrEmpty(referer) ? Redirect(referer) : RedirectToAction(nameof(Index));
         }
+
         [HttpPost]
         public async Task<IActionResult> MoveUp(int id, int idQuestionnaire)
         {
@@ -201,12 +151,8 @@ namespace WebApplication_SRPFIQ.Controllers
 
             if (above != null)
             {
-                int temp = current.Order;
-                current.Order = above.Order;
-                above.Order = temp;
-
-                _context.Update(current);
-                _context.Update(above);
+                (current.Order, above.Order) = (above.Order, current.Order);
+                _context.UpdateRange(current, above);
                 await _context.SaveChangesAsync();
             }
 
@@ -226,101 +172,90 @@ namespace WebApplication_SRPFIQ.Controllers
 
             if (below != null)
             {
-                int temp = current.Order;
-                current.Order = below.Order;
-                below.Order = temp;
-
-                _context.Update(current);
-                _context.Update(below);
+                (current.Order, below.Order) = (below.Order, current.Order);
+                _context.UpdateRange(current, below);
                 await _context.SaveChangesAsync();
             }
 
             return RedirectToAction("Edit", "Questionnaires", new { id = idQuestionnaire });
         }
 
-
-
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,IdQuestionnaire,Order,Name,Active,Title,ShortTitle,Instructions,IdMainDataType,IdMainDataSource,IdSubDataType,IdSubDataSource")] QuestionnaireQuestions questionnaireQuestions)
-        {
-            if (id != questionnaireQuestions.ID) return NotFound();
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(questionnaireQuestions);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!_context.QuestionnaireQuestions.Any(e => e.ID == id))
-                        return NotFound();
-                    else
-                        throw;
-                }
-                return RedirectToAction(nameof(Index));
-            }
-
-            return View();
-        }
-
-
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null) return NotFound();
 
-            var questionnaireQuestions = await _context.QuestionnaireQuestions
+            var question = await _context.QuestionnaireQuestions
                 .Include(q => q.Questionnaire)
-                .Include(q => q.QuestionnaireDataSources)
-                .FirstOrDefaultAsync(m => m.ID == id);
-            if (questionnaireQuestions == null) return NotFound();
+                .FirstOrDefaultAsync(q => q.ID == id);
 
-            return View(questionnaireQuestions);
+            if (question == null) return NotFound();
+
+            return View(question);
         }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ToggleActive(int id)
-        {
-            var questionnaireQuestion = await _context.QuestionnaireQuestions.FindAsync(id);
-            if (questionnaireQuestion == null)
-                return NotFound();
-
-            questionnaireQuestion.Active = !questionnaireQuestion.Active;
-            _context.Update(questionnaireQuestion);
-            await _context.SaveChangesAsync();
-
-            // Redirige vers la page précédente (celle qui a envoyé la requête)
-            var referer = Request.Headers["Referer"].ToString();
-            if (!string.IsNullOrEmpty(referer))
-                return Redirect(referer);
-
-            // Fallback si Referer n'est pas disponible
-            return RedirectToAction(nameof(Index));
-        }
-
 
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var questionnaireQuestions = await _context.QuestionnaireQuestions.FindAsync(id);
-            if (questionnaireQuestions != null)
+            var question = await _context.QuestionnaireQuestions.FindAsync(id);
+            if (question != null)
             {
-                _context.QuestionnaireQuestions.Remove(questionnaireQuestions);
+                _context.QuestionnaireQuestions.Remove(question);
                 await _context.SaveChangesAsync();
             }
-            // Si requête AJAX, retourner OK simple
+
             if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
                 return Ok();
 
-            // Sinon redirection normale
             return RedirectToAction(nameof(Index));
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetQuestion(int id)
+        {
+            var q = await _context.QuestionnaireQuestions.FindAsync(id);
+            if (q == null) return NotFound();
+
+            return Json(new
+            {
+                q.ID,
+                q.Order,
+                q.Name,
+                q.Title,
+                q.ShortTitle,
+                q.Instructions,
+                q.IdMainDataType,
+                q.IdMainDataSource,
+                q.IdSubDataType,
+                q.IdSubDataSource
+            });
+        }
+
+        private void LoadViewBags(int? selectedSourceId = null)
+        {
+            ViewBag.MainDataTypes = new List<SelectListItem>
+            {
+                new("1", "Champ texte"),
+                new("2", "Radio Bouton"),
+                new("3", "Case à cocher"),
+                new("4", "Liste déroulante"),
+                new("5", "Liste déroulante multiple"),
+                new("6", "Tableau composé"),
+                new("7", "Champ texte multiple")
+            };
+
+            ViewBag.SubDataTypes = new List<SelectListItem>
+            {
+                new("2", "Radio Bouton"),
+                new("3", "Case à cocher")
+            };
+
+            var sources = _context.QuestionnaireDataSources
+                .Select(s => new { s.ID, s.Name })
+                .ToList();
+
+            ViewBag.DataSources = new SelectList(sources, "ID", "Name", selectedSourceId);
+        }
 
 
 

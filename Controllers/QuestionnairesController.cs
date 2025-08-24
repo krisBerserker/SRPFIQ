@@ -101,7 +101,7 @@ namespace WebApplication_SRPFIQ.Controllers
         // POST: Questionnaires/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,Name,Description,Active,CreatedDate")] Questionnaires questionnaires)
+        public async Task<IActionResult> Edit(int id, [Bind("ID,Name,Description,Active")] Questionnaires questionnaires)
         {
             if (id != questionnaires.ID)
             {
@@ -112,7 +112,13 @@ namespace WebApplication_SRPFIQ.Controllers
             {
                 try
                 {
-                    questionnaires.CreatedDate = DateTime.Now;
+                    var existingQuestion = await _context.Questionnaires.AsNoTracking().FirstOrDefaultAsync(q => q.ID == id);
+                    if (existingQuestion == null)
+                        return NotFound();
+
+                    // Conserver la valeur originale de la date
+                    questionnaires.CreatedDate = existingQuestion.CreatedDate;
+
                     _context.Update(questionnaires);
                     await _context.SaveChangesAsync();
                 }
@@ -180,6 +186,52 @@ namespace WebApplication_SRPFIQ.Controllers
         {
             return _context.Questionnaires.Any(e => e.ID == id);
         }
+
+
+        private void LoadViewBags(int? selectedSourceId = null)
+        {
+            ViewBag.MainDataTypes = new List<SelectListItem>
+            {
+                new("1", "Champ texte"),
+                new("2", "Radio Bouton"),
+                new("3", "Case à cocher"),
+                new("4", "Liste déroulante"),
+                new("5", "Liste déroulante multiple"),
+                new("6", "Tableau composé"),
+                new("7", "Champ texte multiple")
+            };
+
+            ViewBag.SubDataTypes = new List<SelectListItem>
+            {
+                new("2", "Radio Bouton"),
+                new("3", "Case à cocher")
+            };
+
+            var sources = _context.QuestionnaireDataSources
+                .Select(s => new { s.ID, s.Name })
+                .ToList();
+
+            ViewBag.DataSources = new SelectList(sources, "ID", "Name", selectedSourceId);
+        }
+
+        public async Task<IActionResult> Afficher(int id)
+        {
+            var questionnaire = await _context.Questionnaires
+                .Include(q => q.Questions)
+                    .ThenInclude(qq => qq.QuestionnaireDataSources)
+                        .ThenInclude(ds => ds.Options)
+                .FirstOrDefaultAsync(q => q.ID == id);
+
+            if (questionnaire == null)
+                return NotFound();
+
+            LoadViewBags();
+            return View(questionnaire);
+        }
+
+
+
+
 
 
 

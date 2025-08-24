@@ -29,9 +29,14 @@
                 <td>@Html.DisplayFor(modelItem => item.Active)</td>
                 <td>@Html.DisplayFor(modelItem => item.CreatedDate)</td>
                 <td>
-                    <a asp-action="Edit" asp-route-id="@item.ID" title="Gérer">
-                        <i class="fas fa-edit text-primary"></i>
+                    <a asp-controller="Questionnaires" asp-action="Afficher" asp-route-id="@item.ID" title="Afficher le questionnaire">
+                        <i class="fas fa-eye text-info mr-2"></i>
                     </a>
+
+                    <a asp-action="Edit" asp-route-id="@item.ID" title="Gérer">
+                        <i class="fas fa-edit text-primary mr-2"></i>
+                    </a>
+
                     @if (!item.Active)
                     {
                         <form asp-action="ToggleActive" asp-route-id="@item.ID" method="post" class="d-inline">
@@ -40,12 +45,12 @@
                             </button>
                         </form>
 
-                        <!-- Bouton supprimer ouvre le modal -->
                         <button type="button" class="btn btn-link p-0 m-0 align-baseline text-danger" data-toggle="modal" data-target="#confirmDeleteModal" data-id="@item.ID" data-name="@item.Name" title="Supprimer">
                             <i class="fas fa-trash-alt"></i>
                         </button>
                     }
                 </td>
+
             </tr>
         }
     </tbody>

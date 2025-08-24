@@ -83,13 +83,13 @@
                                 @Html.AntiForgeryToken()
                             </form>
                         }
-                                    @if (User.Identity.IsAuthenticated)
+                                   @*  @if (User.Identity.IsAuthenticated)
                                     {
                                         <form asp-action="Logout" asp-controller="Account" method="post" class="mt-2">
                                             @Html.AntiForgeryToken()
                                             <button type="submit" class="btn btn-outline-danger btn-block btn-user">Déconnexion</button>
                                         </form>
-                                    }
+                                    } *@
 
                                     <hr>
                                     <div class="text-center">
