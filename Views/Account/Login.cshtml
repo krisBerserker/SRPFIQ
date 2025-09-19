@@ -71,10 +71,10 @@
                                         <button type="submit" class="btn btn-primary btn-user btn-block">Se connecter</button>
                                     </form>
 
-                    <form asp-action="Register" asp-controller="Account" method="get" class="form-inline">
-                        <button type="submit" class="btn btn-outline-danger">Créer un compte</button>
-                        @Html.AntiForgeryToken()
-                    </form>
+                    @* <form asp-action="Register" asp-controller="Account" method="get" class="form-inline"> *@
+                    @*     <button type="submit" class="btn btn-outline-danger">Créer un compte</button> *@
+                    @*     @Html.AntiForgeryToken() *@
+                    @* </form> *@
 
                         @if (User.Identity.IsAuthenticated)
                         {
@@ -95,9 +95,9 @@
                                     <div class="text-center">
                                         <a class="small" href="#">Mot de passe oublié ?</a>
                                     </div>
-                                    <div class="text-center">
-                                        <a class="small" href="#">Créer un compte !</a>
-                                    </div>
+                                    @* <div class="text-center"> *@
+                                    @*     <a class="small" href="#">Créer un compte !</a> *@
+                                    @* </div> *@
                                 </div>
                             </div>
                         </div>
